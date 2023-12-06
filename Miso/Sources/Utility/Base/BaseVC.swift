@@ -5,8 +5,7 @@ import SnapKit
 import Then
 import UIKit
 
-class BaseVC<T>: UIViewController {
-    let viewModel: T
+class BaseVC: UIViewController {
     var disposeBag = DisposeBag()
 
     // MARK: - Properties
@@ -15,8 +14,7 @@ class BaseVC<T>: UIViewController {
 
     // MARK: - LifeCycle
 
-    init(_ viewModel: T) {
-        self.viewModel = viewModel
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,7 +34,6 @@ class BaseVC<T>: UIViewController {
         setupBackgroundIfNotSet()
         addView()
         setLayout()
-        bind(reactor: viewModel)
     }
 
     override func viewDidLayoutSubviews() {
@@ -57,16 +54,7 @@ class BaseVC<T>: UIViewController {
     func setLayout() {}
     func setLayoutSubviews() {}
 
-    func bind(reactor: T) {
-        bindView(reactor: reactor)
-        bindAction(reactor: reactor)
-        bindState(reactor: reactor)
-    }
-
-    func bindView(reactor _: T) {}
-    func bindAction(reactor _: T) {}
-    func bindState(reactor _: T) {}
-
+   
     override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
         view.endEditing(true)
     }
