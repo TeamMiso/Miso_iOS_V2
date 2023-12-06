@@ -1,192 +1,218 @@
-import RxCocoa
-import RxFlow
 import UIKit
+import RxKeyboard
+import SnapKit
 
-final class LoginVC: BaseVC<LoginVM> {
-    var steps = PublishRelay<Step>()
-
-    var initialStep: Step {
-        MisoStep.loginIsRequired
-    }
-
-    private let backgroundImageView = UIImageView().then {
-        $0.image = UIImage(named: "LoginBackground")
-    }
-
-    private let logoImageView = UIImageView().then {
-        $0.image = UIImage(named: "Logo")
-    }
-
+final class LoginVC: BaseVC {
+    
+    let viewModel = LoginVM()
+    
+    private let containView = UIView()
+    
     private let misoLabel = UILabel().then {
-        $0.text = "\"미소\""
-        $0.textColor = UIColor(rgb: 0xFAFAFA)
-        $0.textAlignment = .center
-        $0.font = .miso(size: 24, family: .extraLight)
+        $0.text = "미소"
+        $0.textColor = UIColor(rgb: 0x25D07D)
+        $0.font = .miso(size: 32, family: .extraBold)
     }
-
-    private let backgroundView = UIView().then {
-        $0.backgroundColor = UIColor(rgb: 0xE5F0EC)
-        $0.layer.cornerRadius = 30
-        $0.layer.masksToBounds = true
+    private let explainMisoLabel = UILabel().then {
+        $0.text = "환경을 웃음으로 바꾸다 :)"
+        $0.textColor = UIColor(rgb: 0xBFBFBF)
+        $0.font = .miso(size: 20, family: .regular)
     }
-
-    private let vcNameLabel = UILabel().then {
-        $0.text = "Log In"
-        $0.textColor = UIColor(rgb: 0x416A36)
-        $0.textAlignment = .center
-        $0.font = .miso(size: 30, family: .extraLight)
-    }
-
     private let emailLabel = UILabel().then {
         $0.text = "Email"
-        $0.textColor = UIColor(rgb: 0x292929)
-        $0.textAlignment = .center
-        $0.font = .miso(size: 13, family: .extraLight)
+        $0.textColor = UIColor(rgb: 0x595959)
+        $0.font = .miso(size: 12, family: .regular)
     }
-
-    private let emailTextfield = NormalTextField(placeholder: "  이메일을 입력해주세요").then {
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = UIColor(rgb: 0xFFFFFF)
+    private let emailTextField = NormalTextField(placeholder: "  이메일").then {
+        $0.font = .miso(size: 15, family: .regular)
     }
-
     private let passwordLabel = UILabel().then {
         $0.text = "Password"
-        $0.textColor = UIColor(rgb: 0x292929)
-        $0.textAlignment = .center
-        $0.font = .miso(size: 13, family: .extraLight)
+        $0.textColor = UIColor(rgb: 0x595959)
+        $0.font = .miso(size: 12, family: .regular)
     }
-
-    private let passwordTextfield = SecureTextField(placeholder: "  비밀번호를 입력해주세요").then {
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = UIColor(rgb: 0xFFFFFF)
+    private let passwordTextField = SecureTextField(placeholder: "  비밀번호").then {
+        $0.font = .miso(size: 15, family: .regular)
     }
-
-    private let getAuthNumberButton = NextStepButton().then {
+    private lazy var forgotPasswordButton = UIButton().then {
+        $0.setTitle("비밀번호를 잊으셨나요?", for: .normal)
+        $0.setTitleColor(UIColor(rgb: 0xBFBFBF), for: .normal)
+        $0.titleLabel?.font = .miso(size: 12, family: .regular)
+        $0.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
+    }
+    private lazy var findPasswordButton = UIButton().then {
+        $0.setTitle("비밀번호 찾기", for: .normal)
+        $0.setTitleColor(UIColor(rgb: 0x3484DB), for: .normal)
+        $0.titleLabel?.font = .miso(size: 12, family: .regular)
+        $0.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
+    }
+    private lazy var loginButton = NextStepButton().then {
         $0.setTitle("로그인", for: .normal)
-        $0.isEnabled = false
-//        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+//        $0.isEnabled = false
+        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
     }
-
-    private let accountAskLabel = UILabel().then {
-        $0.text = "계정이 없으신가요?"
-        $0.textColor = UIColor(rgb: 0x808080)
-        $0.font = .miso(size: 12, family: .extraLight)
+    private let notMemberLabel = UILabel().then {
+        $0.text = "-------------------------- 회원이 아니신가요? --------------------------"
+        $0.textColor = UIColor(rgb: 0xBFBFBF)
+        $0.font = .miso(size: 12, family: .regular)
     }
-
-    private let gotoSignupButton = UIButton().then {
+    private lazy var signinButton = UIButton().then {
         $0.setTitle("회원가입", for: .normal)
-        $0.titleLabel?.font = .miso(size: 12, family: .light)
-        $0.setTitleColor(UIColor(rgb: 0x81A895), for: .normal)
+        $0.setTitleColor(UIColor(rgb: 0x3484DB), for: .normal)
+        $0.titleLabel?.font = .miso(size: 15, family: .regular)
+        $0.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    func showKeyBoard() {
+        RxKeyboard.instance.visibleHeight
+            .skip(1)    // 초기 값 버리기
+            .drive(onNext: { keyboardVisibleHeight in
+                UIView.animate(withDuration: 1.0) {
+                    self.loginButton.snp.updateConstraints {
+                        $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardVisibleHeight-24)
+                    }
+                    self.containView.snp.updateConstraints {
+                        $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(24)
+                    }
+                }
+                self.view.layoutIfNeeded()
+            })
+            .disposed(by: disposeBag)
     }
-
+    
     override func setup() {
-        emailTextfield.delegate = self
-        passwordTextfield.delegate = self
+        let backBarButtonItem = UIBarButtonItem(title: "돌아가기", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(rgb: 0x3484DB)
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
+        showKeyBoard()
     }
-
+    
     override func addView() {
         view.addSubviews(
-            backgroundImageView,
-            logoImageView,
+            notMemberLabel,
+            signinButton,
+            containView
+        )
+        containView.addSubviews(
             misoLabel,
-            backgroundView,
-            vcNameLabel,
-
+            explainMisoLabel,
             emailLabel,
-            emailTextfield,
-
+            emailTextField,
             passwordLabel,
-            passwordTextfield,
-
-            getAuthNumberButton,
-            accountAskLabel,
-            gotoSignupButton
+            passwordTextField,
+            forgotPasswordButton,
+            findPasswordButton,
+            loginButton
         )
     }
-
-    override func setLayout() {
-        backgroundImageView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        logoImageView.snp.makeConstraints {
-            $0.height.width.equalTo(70)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(8)
-            $0.centerX.equalToSuperview()
+    
+    override func setLayout(){
+        containView.snp.makeConstraints {
+            $0.height.equalTo(304)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
         misoLabel.snp.makeConstraints {
-            $0.top.equalTo(logoImageView.snp.bottom).offset(4)
-            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview()
         }
-        backgroundView.snp.makeConstraints {
-            $0.top.equalTo(misoLabel.snp.bottom).offset(28)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-        vcNameLabel.snp.makeConstraints {
-            $0.top.equalTo(self.backgroundView.snp.top).offset(35)
-            $0.centerX.equalToSuperview()
+        explainMisoLabel.snp.makeConstraints {
+            $0.top.equalTo(misoLabel.snp.bottom)
+            $0.leading.equalToSuperview()
         }
         emailLabel.snp.makeConstraints {
-            $0.top.equalTo(vcNameLabel.snp.bottom).offset(20)
-            $0.leading.equalToSuperview().offset(32)
+            $0.top.equalTo(explainMisoLabel.snp.bottom).offset(40)
+            $0.leading.equalToSuperview()
         }
-        emailTextfield.snp.makeConstraints {
+        emailTextField.snp.makeConstraints {
             $0.height.equalTo(48)
-            $0.top.equalTo(emailLabel.snp.bottom).offset(4)
-            $0.leading.trailing.equalToSuperview().inset(32)
+            $0.top.equalTo(emailLabel.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
         }
         passwordLabel.snp.makeConstraints {
-            $0.top.equalTo(emailTextfield.snp.bottom).offset(22)
-            $0.leading.equalTo(emailLabel)
+            $0.top.equalTo(emailTextField.snp.bottom).offset(24)
+            $0.leading.equalToSuperview()
         }
-        passwordTextfield.snp.makeConstraints {
+        passwordTextField.snp.makeConstraints {
             $0.height.equalTo(48)
-            $0.top.equalTo(passwordLabel.snp.bottom).offset(4)
-            $0.leading.trailing.equalToSuperview().inset(32)
+            $0.top.equalTo(passwordLabel.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
         }
-        getAuthNumberButton.snp.makeConstraints {
-            $0.height.equalTo(55)
-            $0.top.equalTo(passwordTextfield.snp.bottom).offset(40)
-            $0.leading.trailing.equalToSuperview().inset(32)
+        forgotPasswordButton.snp.makeConstraints {
+            $0.top.equalTo(passwordTextField.snp.bottom).offset(8)
+            $0.leading.equalToSuperview()
         }
-        accountAskLabel.snp.makeConstraints {
-            $0.top.equalTo(getAuthNumberButton.snp.bottom).offset(10)
-            $0.leading.equalToSuperview().offset(116)
+        findPasswordButton.snp.makeConstraints {
+            $0.top.equalTo(forgotPasswordButton.snp.top)
+            $0.trailing.equalToSuperview()
         }
-        gotoSignupButton.snp.makeConstraints {
-            $0.height.equalTo(15)
-            $0.top.equalTo(accountAskLabel.snp.top)
-            $0.leading.equalTo(accountAskLabel.snp.trailing).offset(4)
+        loginButton.snp.makeConstraints {
+            $0.height.equalTo(48)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(208)
+        }
+        notMemberLabel.snp.makeConstraints {
+            $0.bottom.equalTo(signinButton.snp.top).inset(-8)
+            $0.centerX.equalToSuperview()
+        }
+        signinButton.snp.makeConstraints {
+            $0.height.equalTo(24)
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(80)
+            $0.centerX.equalToSuperview()
         }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        containView.snp.updateConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+        }
+        loginButton.snp.updateConstraints {
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(152)
+        }
+    }
+    
+    @objc func loginButtonTapped(_ sender: UIButton){
+        
+    }
+    
+    @objc func findPasswordButtonTapped(_ sender: UIButton){
+        print("비밀번호 찾기 버튼 클릭")
+        //        let vc = FindPasswordVC()
+        //        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func signupButtonTapped(_ sender: UIButton){
+        print("회원가입 버튼 클릭")
+        let vc = SignupVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
 
-extension LoginVC: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField == emailTextfield {
-            emailTextfield.layer.borderColor = UIColor(rgb: 0x4C53FF).cgColor
-            emailTextfield.layer.borderWidth = 1
-        } else {
-            passwordTextfield.layer.borderColor = UIColor(rgb: 0x4C53FF).cgColor
-            passwordTextfield.layer.borderWidth = 1
-        }
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField == emailTextfield {
-            emailTextfield.layer.borderWidth = 0
-        } else {
-            passwordTextfield.layer.borderWidth = 0
-        }
-    }
-
+extension LoginVC: UITextFieldDelegate{
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        
+        containView.snp.updateConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+        }
+        loginButton.snp.updateConstraints {
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(208)
+        }
         return true
+    }
+    
+    override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
+        view.endEditing(true)
+        containView.snp.updateConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+        }
+        loginButton.snp.updateConstraints {
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(208)
+        }
     }
 }
