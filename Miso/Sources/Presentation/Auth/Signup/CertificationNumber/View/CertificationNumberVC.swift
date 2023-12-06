@@ -12,83 +12,38 @@ final class CertificationNumberVC: BaseVC {
     
     var buttonBottomConstraint: NSLayoutConstraint?
     
-    private let certificationNoticeLabel = UILabel().then{
-        $0.text = "인증번호를 입력해주세요"
-        $0.textColor = UIColor(rgb: 0x000000)
-    }
-    
-    private let sentCertificationLabel = UILabel().then{
-        $0.text = "입력하신 메일로 인증번호를 보냈어요!"
-        $0.textColor = UIColor(rgb: 0x999999)
-        $0.textAlignment = .left
-        $0.font = .miso(size: 24, family: .semiBold)
-    }
-    
     private let certificationNumberTextField = AEOTPTextField().then{
-        $0.otpFont = .miso(size: 32, family: .regular)
-        $0.otpTextColor = UIColor(rgb: 0x767676)
-        $0.otpCornerRaduis = 5
+        $0.otpFont = .miso(size: 32, family: .semiBold)
+        $0.otpTextColor = UIColor(rgb: 0x25D07D)
+        $0.otpCornerRaduis = 8
         $0.configure(with: 4)
-    }
-    
-    private let confirmationButton = NextStepButton().then{
-        $0.setTitle("확인", for: .normal)
-        $0.backgroundColor = UIColor(rgb: 0xA9A9A9)
     }
     
     override func setup() {
         certificationNumberTextField.otpDelegate = self
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setUpOutputBinding()
+        
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.title = "인증번호 입력"
     }
     
     override func addView() {
-        view.addSubview(certificationNoticeLabel)
-        view.addSubview(sentCertificationLabel)
         view.addSubview(certificationNumberTextField)
-        view.addSubview(confirmationButton)
     }
     
     override func setLayout() {
-        self.certificationNoticeLabel.snp.makeConstraints{
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(bound.height * 0.04)
-            $0.leading.equalTo(self.view).offset(40)
-        }
-        self.sentCertificationLabel.snp.makeConstraints{
-            $0.top.equalTo(certificationNoticeLabel.snp.bottom).offset(4)
-            $0.leading.equalTo(self.view).offset(40)
-        }
         self.certificationNumberTextField.snp.makeConstraints{
-            $0.top.equalTo(sentCertificationLabel.snp.bottom).offset(84)
-            $0.leading.trailing.equalTo(self.view).inset(40)
-            $0.height.equalTo(76)
-        }
-        self.confirmationButton.snp.makeConstraints{
-            $0.height.equalTo(52)
-            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(16)
-            $0.leading.trailing.equalTo(self.view).inset(28)
+            $0.height.equalTo(96)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(208)
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        certificationNumberTextField.becomeFirstResponder()
+    override func viewWillAppear(_ animated: Bool) {
+        self.certificationNumberTextField.snp.updateConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(208)
+        }
     }
-    
-    func setUpOutputBinding() {
-        RxKeyboard.instance.visibleHeight
-            .skip(1)    // 초기 값 버리기
-            .drive(onNext: { keyboardVisibleHeight in
-                
-                self.confirmationButton.snp.updateConstraints {
-                    $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardVisibleHeight)
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
+
 }
 
 extension CertificationNumberVC: AEOTPTextFieldDelegate {
@@ -98,25 +53,12 @@ extension CertificationNumberVC: AEOTPTextFieldDelegate {
         return true
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
     func didUserFinishEnter(the code: String) {
+        print(code)
         print(code.count)
     }
     
-    func textFieldDidChangeSelection(_ textField: AEOTPTextField) {
-        print(certificationNumberTextField.text?.count)
-        
-        if certificationNumberTextField.text!.count > 3{
-            confirmationButton.backgroundColor = UIColor(rgb: 0x42CC89)
-            confirmationButton.isEnabled = true
-        }
-        else{
-            confirmationButton.backgroundColor = UIColor(rgb: 0xA9A9A9)
-            confirmationButton.isEnabled = false
-        }
-    }
+//    override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
+//        view.endEditing(true)
+//    }
 }
-
