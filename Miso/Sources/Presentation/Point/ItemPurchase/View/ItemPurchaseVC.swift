@@ -1,6 +1,6 @@
 import UIKit
 
-final class ItemPurchaseVC: BaseVC<ItemPurchaseVM> {
+final class ItemPurchaseVC: BaseVC {
     
 //    var productId: Int?
 //    var productPrice: Int?

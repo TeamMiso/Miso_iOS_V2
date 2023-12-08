@@ -1,6 +1,6 @@
 import UIKit
 
-final class SearchVC: BaseVC<Any> {
+final class SearchVC: BaseVC {
     private let betweenView = UIView().then {
         $0.backgroundColor = UIColor(rgb: 0x1C1C1E)
     }

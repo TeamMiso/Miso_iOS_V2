@@ -3,16 +3,15 @@ import Moya
 import RxSwift
 import RxCocoa
 
-class SignupVM {
+class LoginVM {
     let authProvider = MoyaProvider<AuthAPI>()
     var authData: LoginResponse!
-    
     static var accessToken = ""
 }
 
-extension SignupVM {
-    
-    func signupCompleted(email: String, password: String, passwordChekck: String) {
+extension LoginVM {
+
+    func loginCompleted(email: String, password: String) {
         
         authProvider.request(.login(email: email, password: password)) { response in
             
@@ -22,10 +21,6 @@ extension SignupVM {
                 do {
                     self.authData = try result.map(LoginResponse.self)
                     
-                    KeychainLocal.shared.deleteAccessToken()
-                    
-                    KeychainLocal.shared.saveAccessToken(self.authData.accessToken)
-                    
                 } catch(let err) {
                     print(String(describing: err))
                 }
@@ -33,12 +28,10 @@ extension SignupVM {
                 
                 switch statusCode{
                 case 200..<300:
-                    do {
-                        let accessToken = try KeychainLocal.shared.fetchAccessToken()
-                        print("Access Token: \(accessToken)")
-                    } catch {
-                        print("Error fetching access token: \(error)")
-                    }
+                    KeychainLocal.shared.saveAccessToken(self.authData.accessToken)
+                    KeychainLocal.shared.saveRefreshToken(self.authData.refreshToken)
+                    KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
+                    KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
                 case 400:
                     print("Login failed with status code: \(statusCode)")
                 default:
@@ -50,4 +43,3 @@ extension SignupVM {
         }
     }
 }
-
