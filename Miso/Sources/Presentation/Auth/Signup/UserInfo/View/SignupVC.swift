@@ -2,7 +2,7 @@ import UIKit
 import RxKeyboard
 import SnapKit
 
-final class SignupVC: BaseVC {
+final class SignupVC: BaseVC<AuthReactor> {
     
     private let containView = UIView()
     
@@ -27,13 +27,11 @@ final class SignupVC: BaseVC {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 12, family: .regular)
     }
-    private let confirmPasswordTextField = SecureTextField(placeholder: ".  비밀번호 확인").then {
+    private let checkPasswordTextField = SecureTextField(placeholder: ".  비밀번호 확인").then {
         $0.font = .miso(size: 15, family: .regular)
     }
     private lazy var signupButton = NextStepButton().then {
         $0.setTitle("회원가입", for: .normal)
-//        $0.isEnabled = false
-        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
     }
     
     func showKeyboard() {
@@ -75,7 +73,7 @@ final class SignupVC: BaseVC {
             passwordLabel,
             passwordTextField,
             confirmPasswordLabel,
-            confirmPasswordTextField,
+            checkPasswordTextField,
             signupButton
         )
     }
@@ -108,7 +106,7 @@ final class SignupVC: BaseVC {
             $0.top.equalTo(passwordTextField.snp.bottom).offset(24)
             $0.leading.equalToSuperview()
         }
-        confirmPasswordTextField.snp.makeConstraints {
+        checkPasswordTextField.snp.makeConstraints {
             $0.height.equalTo(48)
             $0.top.equalTo(confirmPasswordLabel.snp.bottom)
             $0.leading.trailing.equalToSuperview()
@@ -120,6 +118,17 @@ final class SignupVC: BaseVC {
         }
     }
     
+    override func bindView(reactor: AuthReactor) {
+        signupButton.rx.tap
+            .map { AuthReactor.Action.signupIsCompleted(
+                email: self.emailTextField.text ?? "",
+                password: self.passwordTextField.text ?? "",
+                passwordCheck: self.checkPasswordTextField.text ?? ""
+            )}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         containView.snp.updateConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
@@ -129,20 +138,8 @@ final class SignupVC: BaseVC {
         }
     }
     
-    @objc func loginButtonTapped(_ sender: UIButton){
-        
-    }
-    
     @objc func findPasswordButtonTapped(_ sender: UIButton){
         print("비밀번호 찾기 버튼 클릭")
-        //        let vc = FindPasswordVC()
-        //        self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc func signupButtonTapped(_ sender: UIButton){
-        print("회원가입 버튼 클릭")
-        let vc = SignupVC()
-        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }
@@ -170,4 +167,3 @@ extension SignupVC: UITextFieldDelegate{
         }
     }
 }
-
