@@ -11,15 +11,15 @@ enum AuthAPI {
 extension AuthAPI: TargetType {
     
     public var baseURL: URL {
-        return URL(string: BaseURL.baseURL + "/auth")!
+        return URL(string: BaseURL.baseURL)!
     }
     
     var path: String {
         switch self {
         case .login:
-            return "/signIn"
+            return "/auth/signIn"
         case .signup, .logout, .refresh:
-            return ""
+            return "/auth"
         case .certificationNumber:
             return "/email"
         }
