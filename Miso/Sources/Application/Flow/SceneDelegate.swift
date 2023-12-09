@@ -6,75 +6,17 @@ import Moya
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var coordinator = FlowCoordinator()
-    var rootVC: BaseVC = LoginVC()
     
-    let authProvider = MoyaProvider<AuthAPI>()
-    var authData: LoginResponse!
-
-    func scene(_ scene: UIScene,
-               willConnectTo _: UISceneSession,
-               options _: UIScene.ConnectionOptions)
-    {
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         self.window = window
+        window.rootViewController = SplashVC()
+        window.makeKeyAndVisible()
         
-//        Keychain.shared.delete(type: .refreshToken)
-
-        DispatchQueue.global().async {
-            do {
-                let refreshToken = try Keychain.shared.load(type: .refreshToken)
-                print("Refresh Token : \(refreshToken)")
-                
-                self.authProvider.request(.refresh(refreshToken: refreshToken)) { response in
-                    switch response {
-                    case .success(let result):
-                        do {
-                            self.authData = try result.map(LoginResponse.self)
-                        } catch(let err) {
-                            print(String(describing: err))
-                        }
-                        let statusCode = result.statusCode
-                        
-                        switch statusCode{
-                        case 200..<300:
-                            KeychainLocal.shared.saveAccessToken(self.authData.accessToken)
-                            KeychainLocal.shared.saveRefreshToken(self.authData.refreshToken)
-                            KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
-                            KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
-                            
-                            self.rootVC = MainVC()
-                        
-                            DispatchQueue.main.async {
-                                let navigationController = UINavigationController(rootViewController: self.rootVC)
-                                self.window?.rootViewController = navigationController
-                                self.window?.makeKeyAndVisible()
-                            }
-                            
-                        case 400:
-                            print("리프레시 토큰이 아님")
-                        case 401:
-                            print("토큰이 유효하지 않음")
-                        case 404:
-                            print("사용자를 찾을 수 없음")
-                        default:
-                            print(statusCode)
-                        }
-                        
-                    case .failure(let err):
-                        print(String(describing: err))
-                    }
-                }
-                
-            } catch {
-                print("Error loading refresh token: \(error)")
-                
-                DispatchQueue.main.async {
-                    let navigationController = UINavigationController(rootViewController: self.rootVC)
-                    self.window?.rootViewController = navigationController
-                    self.window?.makeKeyAndVisible()
-                }
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+            let appFlow = AppFlow(window: window)
+            self.coordinator.coordinate(flow: appFlow, with: AppStepper())
         }
     }
 
