@@ -2,10 +2,34 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>앨범에서 사진 선택</string>
+	<key>CFBundleDisplayName</key>
+	<string>Miso</string>
+	<key>CFBundleExecutable</key>
+	<string>Miso</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleName</key>
+	<string>Miso</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
 	<key>NSCameraUsageDescription</key>
 	<string>&quot;앱에서 카메라를 사용하기 위하여 카메라에 업근권한을 요청합니다&quot;</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>앨범에서 사진 선택</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SUITv1-Bold.otf</string>
+		<string>SUITv1-ExtraBold.otf</string>
+		<string>SUITv1-ExtraLight.otf</string>
+		<string>SUITv1-Heavy.otf</string>
+		<string>SUITv1-Light.otf</string>
+		<string>SUITv1-Medium.otf</string>
+		<string>SUITv1-Regular.otf</string>
+		<string>SUITv1-SemiBold.otf</string>
+		<string>SUITv1-Thin.otf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -23,27 +47,12 @@
 			</array>
 		</dict>
 	</dict>
-	<key>CFBundleIdentifier</key>
-	<string>.class.Miso</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SUITv1-Bold.otf</string>
-		<string>SUITv1-ExtraBold.otf</string>
-		<string>SUITv1-ExtraLight.otf</string>
-		<string>SUITv1-Heavy.otf</string>
-		<string>SUITv1-Light.otf</string>
-		<string>SUITv1-Medium.otf</string>
-		<string>SUITv1-Regular.otf</string>
-		<string>SUITv1-SemiBold.otf</string>
-		<string>SUITv1-Thin.otf</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen.storyboard</string>
-	<key>CFBundleExecutable</key>
-	<string>Miso</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

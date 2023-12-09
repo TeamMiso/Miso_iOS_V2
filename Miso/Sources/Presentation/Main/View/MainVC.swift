@@ -72,7 +72,7 @@ final class MainVC: BaseVC<MainReactor>, Stepper {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        bindView(reactor: MainReactor())
+//        bindView(reactor: MainReactor())
     }
 
     override func setLayout() {
@@ -103,12 +103,6 @@ final class MainVC: BaseVC<MainReactor>, Stepper {
 
     // MARK: - Reactor
 
-    override func bindView(reactor: MainReactor) {
-        searchButton.rx.tap
-            .map { MainReactor.Action.searchButtonDidTap }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-    }
 }
 
 extension MainVC: UICollectionViewDelegate, UICollectionViewDataSource {
