@@ -6,7 +6,7 @@ import RxSwift
 import RxKeyboard
 import RxCocoa
 
-final class CertificationNumberVC: BaseVC {
+final class CertificationNumberVC: BaseVC<AuthReactor> {
     
     var btnVerifyBottomConstraint = 10
     
@@ -54,8 +54,7 @@ extension CertificationNumberVC: AEOTPTextFieldDelegate {
     }
     
     func didUserFinishEnter(the code: String) {
-        print(code)
-        print(code.count)
+        viewModel.action.onNext(.certificationIsCompleted(randomKey: code))
     }
     
 //    override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
