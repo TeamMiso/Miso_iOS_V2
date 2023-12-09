@@ -1,7 +1,7 @@
 import ProjectDescription
 
 let projectName = "Miso"
-let orginazationIden = ".class"
+let orginazationIden = ".junseopark"
 
 let project = Project(
     name: projectName,

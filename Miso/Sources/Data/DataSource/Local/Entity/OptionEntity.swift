@@ -1,8 +1,9 @@
-//
-//  OptionEntity.swift
-//  Miso
-//
-//  Created by 박준서 on 12/7/23.
-//
-
 import Foundation
+
+struct OptionEntity {
+    var mainImageName: String
+    var subImageName: String
+    var mainTitle: String
+    var subTitle: String
+    var explain: String
+}

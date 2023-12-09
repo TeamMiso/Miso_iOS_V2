@@ -1,14 +1,14 @@
 import Foundation
 import Moya
 
-enum AuthServices {
+enum AuthAPI {
     case signup(email: String, password: String, passwordCheck: String)
     case login(email: String, password: String)
-    case refresh(refreshTokenRequest: String)
+    case refresh(refreshToken: String)
     case logout(accessToken: String)
-    case emailCertificationNumber(certificationNumber: String)
+    case certificationNumber(randomKey: String)
 }
-extension AuthServices: TargetType {
+extension AuthAPI: TargetType {
     
     public var baseURL: URL {
         return URL(string: BaseURL.baseURL + "/auth")!
@@ -20,14 +20,14 @@ extension AuthServices: TargetType {
             return "/signIn"
         case .signup, .logout, .refresh:
             return ""
-        case .emailCertificationNumber:
-                return "/email"
+        case .certificationNumber:
+            return "/email"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .login, .signup, .emailCertificationNumber:
+        case .login, .signup, .certificationNumber:
             return .post
         case .refresh:
             return .patch
@@ -56,9 +56,9 @@ extension AuthServices: TargetType {
                 "password": password
             ], encoding: JSONEncoding.default)
             
-        case let .emailCertificationNumber(certificationNumber):
+        case let .certificationNumber(randomKey):
             return .requestParameters(parameters: [
-                "randomKey": certificationNumber,
+                "randomKey": randomKey,
             ], encoding: JSONEncoding.default)
             
         default:
@@ -68,26 +68,12 @@ extension AuthServices: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case .logout(let param):
-            return ["Authorization": param]
-        case .refresh(let param):
-            return ["RefreshToken": param]
+        case let .logout(accessToken):
+            return ["Authorization": accessToken]
+        case let .refresh(refreshToken):
+            return ["Refresh-Token": "Bearer " + "\(refreshToken)"]
         default:
             return ["Content-Type": "application/json"]
         }
     }
-    
-    var jwtTokenType: JWTTokenType? {
-        switch self {
-        case .refresh:
-            return .refreshToken
-
-        case .logout:
-            return .accessToken
-
-        default:
-            return JWTTokenType.none
-        }
-    }
-
 }
