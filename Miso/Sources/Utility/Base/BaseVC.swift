@@ -24,13 +24,17 @@ class BaseVC<T>: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
+        
         setup()
+        bind()
         addView()
         setLayout()
         bind(reactor: viewModel)
     }
     
     func setup() {}
+    
+    func bind() {}
     
     func addView() {}
     
