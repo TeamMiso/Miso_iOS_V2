@@ -38,11 +38,11 @@ final class SignupVC: BaseVC<AuthReactor> {
         RxKeyboard.instance.visibleHeight
             .skip(1)    // 초기 값 버리기
             .drive(onNext: { keyboardVisibleHeight in
-                self.signupButton.snp.updateConstraints {
-                    $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardVisibleHeight-24)
-                }
                 self.containView.snp.updateConstraints {
                     $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(24)
+                }
+                self.signupButton.snp.updateConstraints {
+                    $0.top.equalTo(self.checkPasswordTextField.snp.bottom).offset(48)
                 }
                 self.view.layoutIfNeeded()
             })
@@ -80,7 +80,7 @@ final class SignupVC: BaseVC<AuthReactor> {
     
     override func setLayout(){
         containView.snp.makeConstraints {
-            $0.height.equalTo(240)
+            $0.height.equalTo(336)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
             $0.leading.trailing.equalToSuperview().inset(16)
         }
@@ -113,14 +113,14 @@ final class SignupVC: BaseVC<AuthReactor> {
         }
         signupButton.snp.makeConstraints {
             $0.height.equalTo(48)
+            $0.top.equalTo(checkPasswordTextField.snp.bottom).offset(88)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(208)
         }
     }
     
     override func bindView(reactor: AuthReactor) {
         signupButton.rx.tap
-            .map { AuthReactor.Action.signupIsCompleted(
+            .map { AuthReactor.Action.signupIsCompleted (
                 email: self.emailTextField.text ?? "",
                 password: self.passwordTextField.text ?? "",
                 passwordCheck: self.checkPasswordTextField.text ?? ""
@@ -131,17 +131,12 @@ final class SignupVC: BaseVC<AuthReactor> {
     
     override func viewWillAppear(_ animated: Bool) {
         containView.snp.updateConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
         }
         signupButton.snp.updateConstraints {
-            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(152)
+            $0.top.equalTo(self.checkPasswordTextField.snp.bottom).offset(88)
         }
     }
-    
-    @objc func findPasswordButtonTapped(_ sender: UIButton){
-        print("비밀번호 찾기 버튼 클릭")
-    }
-    
 }
 
 extension SignupVC: UITextFieldDelegate{
@@ -152,7 +147,7 @@ extension SignupVC: UITextFieldDelegate{
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
         }
         signupButton.snp.updateConstraints {
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(208)
+            $0.top.equalTo(self.checkPasswordTextField.snp.bottom).offset(48)
         }
         return true
     }
@@ -161,9 +156,6 @@ extension SignupVC: UITextFieldDelegate{
         view.endEditing(true)
         containView.snp.updateConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
-        }
-        signupButton.snp.updateConstraints {
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(208)
         }
     }
 }

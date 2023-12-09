@@ -111,6 +111,7 @@ private extension AuthReactor {
                 switch statusCode{
                 case 201:
                     self.steps.accept(MisoStep.certificationNumberIsRequied)
+                    print("성공")
                 case 400:
                     print("비밀번호가 재확인 비밀번호와 일치하지 않습니다")
                 case 409:
@@ -136,8 +137,8 @@ private extension AuthReactor {
                 let statusCode = result.statusCode
                 
                 switch statusCode{
-                case 201:
-                    self.steps.accept(MisoStep.certificationNumberIsRequied)
+                case 200:
+                    self.steps.accept(MisoStep.loginInIsRequired)
                 case 401:
                     print("인증번호가 일치하지 않습니다")
                 default:
@@ -149,6 +150,4 @@ private extension AuthReactor {
         }
         return .empty()
     }
-    
-    
 }

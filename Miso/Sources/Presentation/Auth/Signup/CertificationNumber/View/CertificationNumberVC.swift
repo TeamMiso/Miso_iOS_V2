@@ -54,10 +54,7 @@ extension CertificationNumberVC: AEOTPTextFieldDelegate {
     }
     
     func didUserFinishEnter(the code: String) {
+        print(code)
         viewModel.action.onNext(.certificationIsCompleted(randomKey: code))
     }
-    
-//    override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
-//        view.endEditing(true)
-//    }
 }
