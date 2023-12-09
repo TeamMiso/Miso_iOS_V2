@@ -1,26 +1,63 @@
-import UIKit
-import Moya
-import RxSwift
+import Foundation
+import RxFlow
 import RxCocoa
+import RxSwift
+import Moya
+import ReactorKit
 
-class LoginVM {
-    let authProvider = MoyaProvider<AuthAPI>()
+class AuthReactor: Reactor, Stepper{
+    // MARK: - Properties
+    
+    var initialState: State
+    var steps: PublishRelay<Step> = .init()
+    let authProvider = MoyaProvider<AuthAPI>(plugins: [NetworkLoggerPlugin()])
+    
+    let keychain = Keychain()
+
+    
     var authData: LoginResponse!
-    static var accessToken = ""
+
+    
+    // MARK: - Reactor
+    
+    enum Action {
+        case loginButtonTapped(email: String, password: String)
+    }
+    
+    enum Mutation {
+        
+    }
+    
+    struct State {
+        
+    }
+    
+    // MARK: - Init
+    init() {
+        self.initialState = State()
+    }
 }
 
-extension LoginVM {
+// MARK: - Mutate
+extension AuthReactor {
+    func mutate(action: Action) -> Observable<Mutation> {
+        switch action {
+        case let .loginButtonTapped(email, password):
+            return loginCompleted(email: email, password: password)
+        }
+    }
+}
 
-    func loginCompleted(email: String, password: String) {
+// MARK: - Method
+private extension AuthReactor {
+    
+    private func loginCompleted(email: String, password: String) -> Observable<Mutation>  {
         
         authProvider.request(.login(email: email, password: password)) { response in
-            
             switch response {
             case .success(let result):
-                
                 do {
                     self.authData = try result.map(LoginResponse.self)
-                    
                 } catch(let err) {
                     print(String(describing: err))
                 }
@@ -41,5 +78,6 @@ extension LoginVM {
                 print(String(describing: err))
             }
         }
+        return .empty()
     }
 }
