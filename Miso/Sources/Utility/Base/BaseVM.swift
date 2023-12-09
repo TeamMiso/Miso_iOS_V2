@@ -8,6 +8,7 @@ class BaseVM {
     var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
     let keychain = Keychain()
-//    let gomsRefreshToken = GOMSRefreshToken.shared
-//    lazy var accessToken = "Bearer " + (keychain.read(key: Const.KeychainKey.accessToken) ?? "")
+//    let refreshToken = GOMSRefreshToken.shared
+//    lazy var accessToken = try keychain.load(type: .accessToken)
+
 }
