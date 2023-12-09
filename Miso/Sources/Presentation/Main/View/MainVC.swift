@@ -5,7 +5,7 @@ import SnapKit
 import Then
 import UIKit
 
-final class MainVC: BaseVC, Stepper {
+final class MainVC: BaseVC<MainReactor>, Stepper {
     var steps = PublishRelay<Step>()
 
     var option: [OptionEntity] = [
