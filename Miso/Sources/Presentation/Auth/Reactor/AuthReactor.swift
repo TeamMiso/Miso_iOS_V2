@@ -11,17 +11,17 @@ class AuthReactor: Reactor, Stepper{
     var initialState: State
     var steps: PublishRelay<Step> = .init()
     let authProvider = MoyaProvider<AuthAPI>(plugins: [NetworkLoggerPlugin()])
-    
+    var authData: AuthResponse!
     let keychain = Keychain()
-
-    
-    var authData: LoginResponse!
 
     
     // MARK: - Reactor
     
     enum Action {
-        case loginButtonTapped(email: String, password: String)
+        case loginIsCompleted(email: String, password: String)
+        case signupIsRequired
+        case signupIsCompleted(email: String, password: String, passwordCheck: String)
+        case certificationIsCompleted(randomKey: String)
     }
     
     enum Mutation {
@@ -42,8 +42,14 @@ class AuthReactor: Reactor, Stepper{
 extension AuthReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case let .loginButtonTapped(email, password):
-            return loginCompleted(email: email, password: password)
+        case let .loginIsCompleted(email, password):
+            return loginIsCompleted(email: email, password: password)
+        case let .signupIsRequired:
+            return signupIsRequired()
+        case let .signupIsCompleted(email, password, passwordCheck):
+            return signupIsCompleted(email: email, password: password, passwordCheck: passwordCheck)
+        case let .certificationIsCompleted(randomKey):
+            return certificationIsCompleted(randomkey: randomKey)
         }
     }
 }
@@ -51,26 +57,39 @@ extension AuthReactor {
 // MARK: - Method
 private extension AuthReactor {
     
-    private func loginCompleted(email: String, password: String) -> Observable<Mutation>  {
-        
+    func signupIsRequired() -> Observable<Mutation> {
+        self.steps.accept(MisoStep.signupIsRequired)
+        return .empty()
+    }
+    
+    private func loginIsCompleted(email: String, password: String) -> Observable<Mutation>  {
         authProvider.request(.login(email: email, password: password)) { response in
             switch response {
             case .success(let result):
                 do {
-                    self.authData = try result.map(LoginResponse.self)
+                    self.authData = try result.map(AuthResponse.self)
                 } catch(let err) {
                     print(String(describing: err))
                 }
+                
                 let statusCode = result.statusCode
                 
                 switch statusCode{
-                case 200..<300:
+                case 200:
+                    print("AuthReactor: 성공")
                     KeychainLocal.shared.saveAccessToken(self.authData.accessToken)
                     KeychainLocal.shared.saveRefreshToken(self.authData.refreshToken)
                     KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
                     KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
+                    self.steps.accept(MisoStep.mainVCIsRequired)
                 case 400:
-                    print("Login failed with status code: \(statusCode)")
+                    print("비밀번호가 일치하지 않습니다.")
+                case 403:
+                    print("이메일이 인증되지 않았습니다.")
+                case 404:
+                    print("사용자를 찾을 수 없습니다.")
+                case 500:
+                    print("서버 오류")
                 default:
                     print(statusCode)
                 }
@@ -80,4 +99,56 @@ private extension AuthReactor {
         }
         return .empty()
     }
+    
+    private func signupIsCompleted(email: String, password: String, passwordCheck: String) -> Observable<Mutation> {
+        
+        authProvider.request(.signup(email: email, password: password, passwordCheck: passwordCheck)) { response in
+            
+            switch response {
+            case .success(let result):
+                let statusCode = result.statusCode
+                
+                switch statusCode{
+                case 201:
+                    self.steps.accept(MisoStep.certificationNumberIsRequied)
+                case 400:
+                    print("비밀번호가 재확인 비밀번호와 일치하지 않습니다")
+                case 409:
+                    print("이메일이 이미 사용중입니다")
+                case 500:
+                    print("서버 에러")
+                default:
+                    print(statusCode)
+                }
+            case .failure(let err):
+                print(String(describing: err))
+            }
+        }
+        return .empty()
+    }
+    
+    private func certificationIsCompleted(randomkey: String) -> Observable<Mutation> {
+        
+        authProvider.request(.certificationNumber(randomKey: randomkey)) { response in
+            
+            switch response {
+            case .success(let result):
+                let statusCode = result.statusCode
+                
+                switch statusCode{
+                case 201:
+                    self.steps.accept(MisoStep.certificationNumberIsRequied)
+                case 401:
+                    print("인증번호가 일치하지 않습니다")
+                default:
+                    print(statusCode)
+                }
+            case .failure(let err):
+                print(String(describing: err))
+            }
+        }
+        return .empty()
+    }
+    
+    
 }
