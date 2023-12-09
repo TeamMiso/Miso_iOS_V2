@@ -3,7 +3,7 @@ import RxKeyboard
 import SnapKit
 import Moya
 
-final class LoginVC: BaseVC<Login {
+final class LoginVC: BaseVC<AuthReactor> {
 
     private let containView = UIView()
     
@@ -42,11 +42,9 @@ final class LoginVC: BaseVC<Login {
         $0.setTitle("비밀번호 찾기", for: .normal)
         $0.setTitleColor(UIColor(rgb: 0x3484DB), for: .normal)
         $0.titleLabel?.font = .miso(size: 12, family: .regular)
-        $0.addTarget(self, action: #selector(findPasswordButtonTapped), for: .touchUpInside)
     }
     private lazy var loginButton = NextStepButton().then {
         $0.setTitle("로그인", for: .normal)
-        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         $0.isUserInteractionEnabled = true
     }
     private let notMemberLabel = UILabel().then {
@@ -58,10 +56,9 @@ final class LoginVC: BaseVC<Login {
         $0.setTitle("회원가입", for: .normal)
         $0.setTitleColor(UIColor(rgb: 0x3484DB), for: .normal)
         $0.titleLabel?.font = .miso(size: 15, family: .regular)
-        $0.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
     }
     
-    func showKeyBoard() {
+    override func bind() {
         RxKeyboard.instance.visibleHeight
             .skip(1)    // 초기 값 버리기
             .drive(onNext: { [weak self] keyboardVisibleHeight in
@@ -76,7 +73,6 @@ final class LoginVC: BaseVC<Login {
             .disposed(by: disposeBag)
     }
     
-    
     override func setup() {
         let backBarButtonItem = UIBarButtonItem(title: "돌아가기", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = UIColor(rgb: 0x3484DB)
@@ -84,7 +80,6 @@ final class LoginVC: BaseVC<Login {
         emailTextField.delegate = self
         passwordTextField.delegate = self
         
-        showKeyBoard()
     }
     
     override func addView() {
@@ -162,26 +157,24 @@ final class LoginVC: BaseVC<Login {
         }
     }
     
+    override func bindView(reactor: AuthReactor) {
+        loginButton.rx.tap
+            .map { AuthReactor.Action.loginIsCompleted(
+                email: self.emailTextField.text ?? "",
+                password: self.passwordTextField.text ?? ""
+            )}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        signupButton.rx.tap
+            .map{ AuthReactor.Action.signupIsRequired }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         containView.snp.updateConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
         }
-    }
-    
-    @objc func loginButtonTapped(_ sender: UIButton){
-        self.loginCompleted(email: emailTextField.text ?? "", password: passwordTextField.text ?? "")
-    }
-    
-    @objc func findPasswordButtonTapped(_ sender: UIButton){
-        print("비밀번호 찾기 버튼 클릭")
-        //        let vc = FindPasswordVC()
-        //        self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc func signupButtonTapped(_ sender : UIButton){
-        print("회원가입 버튼 클릭")
-        let vc = SignupVC()
-        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }
@@ -199,7 +192,6 @@ extension LoginVC: UITextFieldDelegate{
                 self.view.layoutIfNeeded()
             }
         }
-        
         return true
     }
     
