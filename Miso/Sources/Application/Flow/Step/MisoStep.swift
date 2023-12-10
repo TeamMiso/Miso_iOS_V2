@@ -11,26 +11,20 @@ import UIKit
 enum MisoStep: Step {
     
     // MARK: - Auth
-    case loginInIsRequired
-    case signupIsRequired
-    case certificationNumberIsRequied
-    case mainVCIsRequired
-    case findPassword_phoneNumberAuth
+    case loginVCIsRequired
+    case signupVCIsRequired
+    case certificationVCIsRequied
+    case tabbarVCIsRequired
+    case findPasswordVCIsRequired
     
     // MARK: TabBar
     case tabBarIsRequired
+    case searchTabbarIsRequired
+    case marketTabbarIsRequired
+    case cameraTabbarIsRequired
+    case inquiryTabbarIsRequired
+    case settingTabbarIsRequired
     
-    // MARK: Home
-    case searchIsRequired
-    case marketIsRequired
-    case requestIsRequired
-    case settingIsRequired
-    
-    case studentInfoIsRequired
-    case searchModalIsRequired
-    case searchModalDismiss
-    case editUserModalIsRequired(accountIdx: UUID)
-    case editModalDismiss
     
     //MARK: Alert
     case alert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction])
