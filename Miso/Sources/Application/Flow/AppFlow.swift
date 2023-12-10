@@ -19,7 +19,7 @@ struct AppStepper: Stepper {
                 steps.accept(MisoStep.tabBarIsRequired)
             default:
                 print(misoRefreshToken.statusCode)
-                steps.accept(MisoStep.loginInIsRequired)
+                steps.accept(MisoStep.loginVCIsRequired)
             }
         }
     }
@@ -45,10 +45,10 @@ final class AppFlow: Flow {
         guard let step = step as? MisoStep else {return .none}
         
         switch step {
-        case .loginInIsRequired:
+        case .loginVCIsRequired:
             return coordinateToLogin()
-//        case .tabBarIsRequired:
-//            return coordinateToHome()
+        case .tabBarIsRequired:
+            return coordinateToHome()
         default:
             return .none
         }
@@ -62,24 +62,19 @@ final class AppFlow: Flow {
         return .one(
             flowContributor: .contribute(
                 withNextPresentable: flow,
-                withNextStepper: OneStepper(withSingleStep: MisoStep.loginInIsRequired)
+                withNextStepper: OneStepper(withSingleStep: MisoStep.loginVCIsRequired)
         ))
     }
 
-//    private func coordinateToHome() -> FlowContributors {
-//        let flow = TabBarFlow()
-//        Flows.use(
-//            flow,
-//            when: .created
-//        ) { [unowned self] root in
-//            self.window.rootViewController = root
-//        }
-//        return .one(
-//            flowContributor: .contribute(
-//                withNextPresentable: flow,
-//                withNextStepper: OneStepper(
-//                    withSingleStep: MisoStep.tabBarIsRequired
-//                )
-//        ))
-//    }
+    private func coordinateToHome() -> FlowContributors {
+        let flow = TabBarFlow()
+        Flows.use(flow, when: .created) { [unowned self] root in
+            self.window.rootViewController = root
+        }
+        return .one(
+            flowContributor: .contribute(
+                withNextPresentable: flow,
+                withNextStepper: OneStepper(withSingleStep: MisoStep.tabBarIsRequired)
+        ))
+    }
 }
