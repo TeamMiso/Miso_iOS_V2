@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = SplashVC()
         window.makeKeyAndVisible()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             let appFlow = AppFlow(window: window)
             self.coordinator.coordinate(flow: appFlow, with: AppStepper())
         }

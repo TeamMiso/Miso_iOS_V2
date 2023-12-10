@@ -7,7 +7,6 @@ struct AuthResponse: Codable {
     let refreshExp: String
 }
 
-
 struct RefreshTokenResponse: Codable {
     let accessToken: String
     let refreshToken: String

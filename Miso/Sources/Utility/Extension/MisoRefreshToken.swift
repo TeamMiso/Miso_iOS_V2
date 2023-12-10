@@ -40,9 +40,9 @@ class MisoRefreshToken {
                     KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
                     KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
                 case 400, 401, 404:
-                    self.steps.accept(MisoStep.loginInIsRequired)
+                    self.steps.accept(MisoStep.loginVCIsRequired)
                 default:
-                    self.steps.accept(MisoStep.loginInIsRequired)
+                    self.steps.accept(MisoStep.loginVCIsRequired)
                 }
             case .failure(let err):
                 print(String(describing: err))
