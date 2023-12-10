@@ -6,7 +6,7 @@ import RxSwift
 import RxKeyboard
 import RxCocoa
 
-final class CertificationNumberVC: BaseVC<AuthReactor> {
+final class CertificationVC: BaseVC<AuthReactor> {
     
     var btnVerifyBottomConstraint = 10
     
@@ -46,7 +46,7 @@ final class CertificationNumberVC: BaseVC<AuthReactor> {
 
 }
 
-extension CertificationNumberVC: AEOTPTextFieldDelegate {
+extension CertificationVC: AEOTPTextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
