@@ -58,7 +58,7 @@ extension AuthReactor {
 private extension AuthReactor {
     
     func signupIsRequired() -> Observable<Mutation> {
-        self.steps.accept(MisoStep.signupIsRequired)
+        self.steps.accept(MisoStep.signupVCIsRequired)
         return .empty()
     }
     
@@ -81,7 +81,7 @@ private extension AuthReactor {
                     KeychainLocal.shared.saveRefreshToken(self.authData.refreshToken)
                     KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
                     KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
-                    self.steps.accept(MisoStep.mainVCIsRequired)
+                    self.steps.accept(MisoStep.tabbarVCIsRequired)
                 case 400:
                     print("비밀번호가 일치하지 않습니다.")
                 case 403:
@@ -110,7 +110,7 @@ private extension AuthReactor {
                 
                 switch statusCode{
                 case 201:
-                    self.steps.accept(MisoStep.certificationNumberIsRequied)
+                    self.steps.accept(MisoStep.certificationVCIsRequied)
                     print("성공")
                 case 400:
                     print("비밀번호가 재확인 비밀번호와 일치하지 않습니다")
@@ -138,7 +138,7 @@ private extension AuthReactor {
                 
                 switch statusCode{
                 case 200:
-                    self.steps.accept(MisoStep.loginInIsRequired)
+                    self.steps.accept(MisoStep.loginVCIsRequired)
                 case 401:
                     print("인증번호가 일치하지 않습니다")
                 default:
