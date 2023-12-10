@@ -1,8 +1,11 @@
-//
-//  SearchVC.swift
-//  Miso
-//
-//  Created by 박준서 on 12/10/23.
-//
+import UIKit
+import SnapKit
+import Then
 
-import Foundation
+final class SearchVC: BaseVC<SearchVM> {
+    
+    override func setup() {
+        view.backgroundColor = UIColor.red
+    }
+    
+}

@@ -1,8 +1,19 @@
-//
-//  SearchVM.swift
-//  Miso
-//
-//  Created by 박준서 on 12/10/23.
-//
-
 import Foundation
+import RxFlow
+import RxCocoa
+import RxSwift
+import Moya
+
+class SearchVM: BaseVM, Stepper{
+    struct Input {
+        
+    }
+    
+    struct Output {
+        
+    }
+    
+    func transVC(input: Input) {
+    }
+
+}
