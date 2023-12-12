@@ -159,7 +159,7 @@ final class LoginVC: BaseVC<AuthReactor> {
     
     override func bindView(reactor: AuthReactor) {
         loginButton.rx.tap
-            .map { AuthReactor.Action.loginIsCompleted(
+            .map {  AuthReactor.Action.loginIsCompleted (
                 email: self.emailTextField.text ?? "",
                 password: self.passwordTextField.text ?? ""
             )}
