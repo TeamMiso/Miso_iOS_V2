@@ -2,17 +2,19 @@ import UIKit
 import RxCocoa
 import RxSwift
 import Then
+import ReactorKit
+import SnapKit
 
-class BaseVC<T>: UIViewController {
-    let viewModel: T
+class BaseVC<T: Reactor>: UIViewController, View {
+    let reactor: T
     var disposeBag = DisposeBag()
     let bounds = UIScreen.main.bounds
     let keychain = Keychain()
     
 //    lazy var userAuthority = keychain.read(key: Const.KeychainKey.authority)
     
-    init(_ viewModel: T) {
-        self.viewModel = viewModel
+    init(_ reactor: T) {
+        self.reactor = reactor
         super .init(nibName: nil, bundle: nil)
     }
     
@@ -29,7 +31,7 @@ class BaseVC<T>: UIViewController {
         bind()
         addView()
         setLayout()
-        bind(reactor: viewModel)
+        bind(reactor: reactor)
     }
     
     func setup() {}
