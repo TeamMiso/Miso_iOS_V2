@@ -12,18 +12,15 @@ struct SearchStepper: Stepper{
 }
 
 class SearchFlow: Flow {
-
+    
     var root: Presentable {
         return self.rootViewController
     }
     
     var stepper = SearchStepper()
     
-    private lazy var rootViewController: UINavigationController = {
-        let viewController = UINavigationController()
-        return viewController
-    }()
-
+    private lazy var rootViewController = UINavigationController()
+    
     init(){}
     
     func navigate(to step: Step) -> FlowContributors {
@@ -36,43 +33,35 @@ class SearchFlow: Flow {
         case .marketTabbarIsRequired:
             return coordinateToSearchTabbar()
             
-        case .cameraTabbarIsRequired:
-            return coordinateToSearchTabbar()
-            
         case .inquiryTabbarIsRequired:
             return coordinateToSearchTabbar()
             
         case .settingTabbarIsRequired:
             return coordinateToSearchTabbar()
+        
+        case let .detailVCIsRequired(data):
+            return coordinateToDetailVC(data: data)
             
         default:
             return .none
         }
     }
     
-    private func coordinateToSearchTabbar() -> FlowContributors {
-        let vm = SearchVM()
-        let vc = SearchVC(vm)
-        self.rootViewController.pushViewController(vc, animated: true)
-        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: vm))
-    }
-    
-    private func presentToAlert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction]) -> FlowContributors {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-        actions.forEach { alert.addAction($0) }
-        self.rootViewController.topViewController?.present(alert, animated: true)
-        return .none
-    }
-    
-    private func presentToFailureAlert(title: String?, message: String?, action: [UIAlertAction]) -> FlowContributors {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        if !action.isEmpty {
-            action.forEach(alert.addAction(_:))
-        } else {
-            alert.addAction(.init(title: "확인", style: .default))
-        }
-        self.rootViewController.topViewController?.present(alert, animated: true)
-        return .none
-    }
 }
-
+private extension SearchFlow {
+    
+    private func coordinateToDetailVC(data: UploadRecyclablesListResponse) -> FlowContributors {
+        let reactor = DetailReactor(uploadRecyclablesList: data)
+        let vc = DetailVC(reactor)
+        self.rootViewController.pushViewController(vc, animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
+    }
+    
+    private func coordinateToSearchTabbar() -> FlowContributors {
+        let reactor = SearchReactor()
+        let vc = SearchVC(reactor)
+        self.rootViewController.pushViewController(vc, animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
+    }
+    
+}
