@@ -8,7 +8,7 @@
 import RxFlow
 import UIKit
 
-enum MisoStep: Step {   
+enum MisoStep: Step {
     
     // MARK: - Auth
     case loginVCIsRequired
@@ -23,6 +23,8 @@ enum MisoStep: Step {
     case marketTabbarIsRequired
     case inquiryTabbarIsRequired
     case settingTabbarIsRequired
+    
+    // MARK: - Search
     case cameraIsRequired
     
     // MARK: - UploadImage
