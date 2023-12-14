@@ -1,6 +1,6 @@
 import Foundation
 
-var itemList: [itemListResponse] = []
+let itemList: [itemListResponse] = []
 
 struct itemListResponse: Codable {
     let id: Int
