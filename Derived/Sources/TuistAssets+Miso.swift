@@ -22,15 +22,8 @@
 public enum MisoAsset {
   public static let accentColor = MisoColors(name: "AccentColor")
   public static let camera = MisoImages(name: "Camera")
-  public static let candy = MisoImages(name: "Candy")
-  public static let exchangePoint = MisoImages(name: "ExchangePoint")
-  public static let inquire = MisoImages(name: "Inquire")
-  public static let market = MisoImages(name: "Market")
-  public static let misoLogo = MisoImages(name: "MisoLogo")
-  public static let registerRecycle = MisoImages(name: "RegisterRecycle")
-  public static let signupBackground = MisoImages(name: "SignupBackground")
-  public static let watchRequestHistory = MisoImages(name: "WatchRequestHistory")
-  public static let write = MisoImages(name: "Write")
+  public static let misoLogoGreen = MisoImages(name: "MisoLogo-Green")
+  public static let misoLogoWhite = MisoImages(name: "MisoLogo-White")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

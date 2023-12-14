@@ -15,9 +15,7 @@
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>NSCameraUsageDescription</key>
-	<string>&quot;앱에서 카메라를 사용하기 위하여 카메라에 업근권한을 요청합니다&quot;</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>앨범에서 사진 선택</string>
+	<string>앱에서 카메라를 사용하기 위하여 카메라에 접근권한을 요청합니다</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SUITv1-Bold.otf</string>

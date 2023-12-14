@@ -67,6 +67,8 @@ class MisoRefreshToken {
                     KeychainLocal.shared.saveRefreshToken(self.authData.refreshToken)
                     KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
                     KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
+                    
+                    print(self.authData.accessToken)
                 default: break;
                 }
             case .failure(let err):
