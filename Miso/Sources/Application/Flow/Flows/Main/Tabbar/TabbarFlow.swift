@@ -1,23 +1,29 @@
 import RxFlow
 import UIKit
+import RxSwift
+import RxCocoa
+
+
+struct TabBarStepper: Stepper{
+    var steps = PublishRelay<Step>()
+
+    var initialStep: Step{
+        return MisoStep.tabBarIsRequired
+    }
+}
 
 final class TabBarFlow: Flow {
     
-    enum TabIndex: Int {
-        case home = 0
-        case qrCode = 1
-        case outing = 2
-    }
-    
     var root: Presentable {
-        return self.rootVC
+        return self.rootViewController
     }
     
-    private let rootVC = MisoTabBarVC()
+    var stepper = SearchStepper()
+    
+    private let rootViewController = MisoTabBarVC()
     
     private var searchFlow = SearchFlow()
     private var marketFlow = SearchFlow()
-    private var cameraFlow = SearchFlow()
     private var inquiryFlow = SearchFlow()
     private var settingFlow = SearchFlow()
     
@@ -31,23 +37,19 @@ final class TabBarFlow: Flow {
             return coordinateToTabbar()
             
         case .searchTabbarIsRequired:
-            rootVC.selectedIndex = 0
+            rootViewController.selectedIndex = 0
             return .none
             
         case .marketTabbarIsRequired:
-            rootVC.selectedIndex = 1
-            return .none
-            
-        case .cameraTabbarIsRequired:
-            rootVC.selectedIndex = 2
+            rootViewController.selectedIndex = 1
             return .none
             
         case .inquiryTabbarIsRequired:
-            rootVC.selectedIndex = 3
+            rootViewController.selectedIndex = 2
             return .none
             
         case .settingTabbarIsRequired:
-            rootVC.selectedIndex = 4
+            rootViewController.selectedIndex = 3
             return .none
             
         case .loginVCIsRequired:
@@ -57,63 +59,53 @@ final class TabBarFlow: Flow {
             return .none
         }
     }
-    
 }
 
 private extension TabBarFlow {
+    
     func coordinateToTabbar() -> FlowContributors {
         Flows.use(
-            searchFlow, marketFlow, cameraFlow, inquiryFlow, settingFlow,
+            searchFlow, marketFlow, inquiryFlow, settingFlow,
             when: .ready
-        ) { [unowned self] ( 
+        ) { [unowned self] (
             root1: UINavigationController,
             root2: UINavigationController,
             root3: UINavigationController,
-            root4: UINavigationController,
-            root5: UINavigationController) in
-
+            root4: UINavigationController) in
+            
             let searchItem = UITabBarItem(
                 title: "검색",
-                image: UIImage(named: "Search"),
-                selectedImage: UIImage(named: "Search.selected")
+                image: UIImage(systemName: "magnifyingglass"),
+                selectedImage: UIImage(systemName: "magnifyingglass")
             )
             let marketItem = UITabBarItem(
                 title: "상점",
-                image: UIImage(named: "Market"),
-                selectedImage: UIImage(named: "Market.selected")
-            )
-            let cameraItem = UITabBarItem(
-                title: "카메라",
-                image: UIImage(named: "Camera"),
-                selectedImage: UIImage(named: "Camera")
+                image: UIImage(systemName: "storefront"),
+                selectedImage: UIImage(systemName: "storefront")
             )
             let inquiryItem = UITabBarItem(
-                title: "홈",
-                image: UIImage(named: "Inquiry"),
-                selectedImage: UIImage(named: "Inquiry.selected")
+                title: "문의",
+                image: UIImage(systemName: "questionmark.bubble"),
+                selectedImage: UIImage(systemName: "questionmark.bubble")
             )
             let settingItem = UITabBarItem(
-                title: "홈",
-                image: UIImage(named: "Setting"),
-                selectedImage: UIImage(named: "Setting.selected")
+                title: "설정",
+                image: UIImage(systemName: "gearshape"),
+                selectedImage: UIImage(systemName: "gearshape")
             )
             
-        
             root1.tabBarItem = searchItem
             root2.tabBarItem = marketItem
-            root3.tabBarItem = cameraItem
-            root4.tabBarItem = inquiryItem
-            root5.tabBarItem = settingItem
+            root3.tabBarItem = inquiryItem
+            root4.tabBarItem = settingItem
             
-            self.rootVC.setViewControllers([root1,root2,root3,root4,root5], animated: true)
+            self.rootViewController.setViewControllers([root1,root2,root3,root4], animated: true)
         }
         return .multiple(flowContributors: [
-            .contribute(withNextPresentable: searchFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.searchTabbarIsRequired)),
+            .contribute(withNextPresentable: searchFlow, withNextStepper: searchFlow.stepper),
             .contribute(withNextPresentable: marketFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.marketTabbarIsRequired)),
-            .contribute(withNextPresentable: cameraFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.cameraTabbarIsRequired)),
             .contribute(withNextPresentable: inquiryFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.inquiryTabbarIsRequired)),
             .contribute(withNextPresentable: settingFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.settingTabbarIsRequired))
         ])
     }
 }
-
