@@ -5,7 +5,7 @@ import Then
 final class SplashVC: UIViewController {
     
     private let misoLogoImage = UIImageView().then {
-        $0.image = UIImage(named: "MisoLogo")
+        $0.image = UIImage(named: "MisoLogo-White")
     }
     
     func setLayout() {
