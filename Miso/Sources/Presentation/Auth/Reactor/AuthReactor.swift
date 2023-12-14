@@ -5,9 +5,9 @@ import RxSwift
 import Moya
 import ReactorKit
 
-class AuthReactor: Reactor, Stepper{
-    // MARK: - Properties
+class AuthReactor: Reactor, Stepper {
     
+    // MARK: - Properties
     var initialState: State
     var steps: PublishRelay<Step> = .init()
     let authProvider = MoyaProvider<AuthAPI>(plugins: [NetworkLoggerPlugin()])
@@ -16,7 +16,6 @@ class AuthReactor: Reactor, Stepper{
 
     
     // MARK: - Reactor
-    
     enum Action {
         case loginIsCompleted(email: String, password: String)
         case signupIsRequired
