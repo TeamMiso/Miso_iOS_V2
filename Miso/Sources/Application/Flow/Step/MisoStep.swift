@@ -21,9 +21,14 @@ enum MisoStep: Step {
     case tabBarIsRequired
     case searchTabbarIsRequired
     case marketTabbarIsRequired
-    case cameraTabbarIsRequired
     case inquiryTabbarIsRequired
     case settingTabbarIsRequired
+    
+    // MARK: - Search
+    case cameraIsRequired
+    
+    // MARK: - UploadImage
+    case detailVCIsRequired(UploadRecyclablesListResponse)
     
     
     //MARK: Alert
