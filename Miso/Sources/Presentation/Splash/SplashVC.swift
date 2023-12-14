@@ -7,7 +7,7 @@ final class SplashVC: UIViewController {
     private let misoLogoImage = UIImageView().then {
         $0.image = UIImage(named: "MisoLogo-White")
     }
-    
+     
     func setLayout() {
         misoLogoImage.snp.makeConstraints {
             $0.height.width.equalTo(160)
