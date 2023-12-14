@@ -8,15 +8,15 @@ enum ItemAPI {
 extension ItemAPI: TargetType {
     
     public var baseURL: URL {
-        return URL(string: BaseURL.baseURL)!
+        return URL(string: BaseURL.baseURL + "/item")!
     }
     
     var path: String {
         switch self {
         case .itemList:
-            return "/item"
+            return ""
         case let .itemDetailList(id, accessToken):
-            return "/item/\(id)"
+            return "/\(id)"
         }
     }
     
