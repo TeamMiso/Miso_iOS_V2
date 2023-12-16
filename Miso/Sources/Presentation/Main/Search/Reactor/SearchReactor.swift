@@ -4,6 +4,7 @@ import ReactorKit
 import RxCocoa
 import RxFlow
 import RxSwift
+import UIKit
 
 class SearchReactor: Reactor, Stepper {
     
@@ -14,7 +15,6 @@ class SearchReactor: Reactor, Stepper {
     var recycleData: UploadRecyclablesListResponse?
     
     let keychain = Keychain()
-    
     let misoRefreshToken = MisoRefreshToken.shared
     lazy var accessToken: String = {
         do {
@@ -26,7 +26,7 @@ class SearchReactor: Reactor, Stepper {
     }()
     
     enum Action {
-        case cameraButtonTapped(image: Data)
+        case cameraButtonTapped(imageData: Data, originalImage: UIImage)
     }
     
     enum Mutation {
@@ -41,10 +41,12 @@ class SearchReactor: Reactor, Stepper {
         self.initialState = State()
     }
     
+}
+extension SearchReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case let .cameraButtonTapped(image):
-            return uploadImage(image: image)
+        case let .cameraButtonTapped(imageData, originalImage):
+            return uploadImage(imageData: imageData, originalImage: originalImage)
         }
     }
     
@@ -58,10 +60,10 @@ class SearchReactor: Reactor, Stepper {
 }
 
 // MARK: - Method
-extension SearchReactor {
-    func uploadImage(image: Data) -> Observable<Mutation> {
+private extension SearchReactor {
+    func uploadImage(imageData: Data, originalImage: UIImage) -> Observable<Mutation> {
         
-            self.recyclablesProvider.request(.uploadImage(accessToken: self.accessToken, image: image)){ response in
+        self.recyclablesProvider.request(.uploadImage(accessToken: self.accessToken, image: imageData, originalImage: originalImage)){ response in
                 switch response {
                 case let .success(result):
                     do {
@@ -73,7 +75,7 @@ extension SearchReactor {
                     switch statusCode{
                     case 200:
                         guard let data = self.recycleData else {return}
-                        self.steps.accept(MisoStep.detailVCIsRequired(data))
+                        self.steps.accept(MisoStep.detailVCIsRequired(data, originalImage))
                     case 401:
                         print("토큰이 유효하지 않음")
                     case 500:
