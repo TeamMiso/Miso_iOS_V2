@@ -165,7 +165,6 @@ final class DetailVC: BaseVC<DetailReactor> {
         }
         pointButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-//            $0.width.equalToSuperview()
             $0.height.equalTo(48)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(40)
@@ -218,7 +217,6 @@ final class DetailVC: BaseVC<DetailReactor> {
         recycleMethodDetailLabel.text = self.recycleMethod
         recycleTipDetailLabel.text = self.recycleTip
         recycleCautionDetailLabel.text = self.recycleCaution
-        
-    
+
     }
 }
