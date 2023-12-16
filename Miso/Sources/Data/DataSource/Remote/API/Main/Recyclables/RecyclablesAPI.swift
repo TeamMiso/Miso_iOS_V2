@@ -1,11 +1,12 @@
 import Foundation
 import Moya
+import UIKit
 
 enum RecyclablesAPI {
     case getDetailRecyclables(accessToken: String)
     case searchRecyclables(accessToken: String)
     case getAllRecyclables(accessToken: String)
-    case uploadImage(accessToken: String, image: Data)
+    case uploadImage(accessToken: String, image: Data, originalImage: UIImage)
 }
 
 extension RecyclablesAPI: TargetType {
@@ -23,7 +24,7 @@ extension RecyclablesAPI: TargetType {
         case .getAllRecyclables:
             return "/all"
         case .uploadImage:
-            return "/process_image"
+            return "/process"
         }
     }
     
@@ -47,7 +48,7 @@ extension RecyclablesAPI: TargetType {
     
     var task: Task {
         switch self {
-        case let .uploadImage(acccessToken, image):
+        case let .uploadImage(acccessToken, image, originalImage):
             let multipartFormData = MultipartFormData(
                 provider: .data(image),
                 name: "recyclables",
@@ -61,7 +62,7 @@ extension RecyclablesAPI: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case let .uploadImage(accessToken, image):
+        case let .uploadImage(accessToken, image, originalImage):
             return [
                 "Authorization": accessToken,
                 "Content-Type": "multipart/form-data"
