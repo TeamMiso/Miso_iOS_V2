@@ -33,7 +33,9 @@ struct UploadRecyclablesListResponse: Decodable {
         let id: Int
         let title: String
         let subTitle: String
-        let content: String
+        let recycleMethod: String
+        let recycleTip: String
+        let recycleCaution: String
         let imageUrl: String
         let recyclablesType: String
         let recycleMark: String

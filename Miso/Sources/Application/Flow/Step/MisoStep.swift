@@ -1,10 +1,3 @@
-//
-//  GOMSStep.swift
-//  GOMS-iOS
-//
-//  Created by 선민재 on 2023/04/18.
-//
-
 import RxFlow
 import UIKit
 
@@ -27,8 +20,9 @@ enum MisoStep: Step {
     // MARK: - Search
     case cameraIsRequired
     
-    // MARK: - UploadImage
-    case detailVCIsRequired(UploadRecyclablesListResponse)
+    // MARK: - Detail
+    case detailVCIsRequired(UploadRecyclablesListResponse, UIImage)
+    case coordinateToSearchVCIsRequired
     
     
     //MARK: Alert
