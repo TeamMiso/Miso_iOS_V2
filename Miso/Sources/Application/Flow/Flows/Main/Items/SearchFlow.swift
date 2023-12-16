@@ -39,8 +39,11 @@ class SearchFlow: Flow {
         case .settingTabbarIsRequired:
             return coordinateToSearchTabbar()
         
-        case let .detailVCIsRequired(data):
-            return coordinateToDetailVC(data: data)
+        case let .detailVCIsRequired(data, originalImage):
+            return coordinateToDetailVC(data: data, originalImage: originalImage)
+            
+        case .coordinateToSearchVCIsRequired:
+            return coordinateToSearchVC()
             
         default:
             return .none
@@ -50,8 +53,8 @@ class SearchFlow: Flow {
 }
 private extension SearchFlow {
     
-    private func coordinateToDetailVC(data: UploadRecyclablesListResponse) -> FlowContributors {
-        let reactor = DetailReactor(uploadRecyclablesList: data)
+    private func coordinateToDetailVC(data: UploadRecyclablesListResponse, originalImage: UIImage) -> FlowContributors {
+        let reactor = DetailReactor(uploadRecyclablesList: data, originalImage: originalImage)
         let vc = DetailVC(reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
@@ -64,5 +67,11 @@ private extension SearchFlow {
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
+    private func coordinateToSearchVC() -> FlowContributors {
+        print("coordinate")
+        let reactor = SearchReactor()
+        let vc = SearchVC(reactor)
+        self.rootViewController.popToRootViewController(animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
+    }
 }
-
