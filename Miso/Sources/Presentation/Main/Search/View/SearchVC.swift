@@ -109,7 +109,8 @@ final class SearchVC: BaseVC<SearchReactor> {
             .disposed(by: disposeBag)
     }
     
-    override func bindState(reactor: SearchReactor) {
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.prefersLargeTitles = false
     }
 }
 
@@ -117,20 +118,18 @@ extension SearchVC: UIImagePickerControllerDelegate, UINavigationControllerDeleg
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
+        if let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
            let imageData = pickedImage.jpegData(compressionQuality: 0.8) {
             picker.dismiss(animated: true) {
-                self.reactor.action.onNext(.cameraButtonTapped(image: imageData))
+                self.reactor.action.onNext(.cameraButtonTapped(imageData: imageData, originalImage: pickedImage))
             }
         } else {
             print("이미지를 Data로 변환하는 데 실패했습니다.")
         }
-
+        
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
     }
 }
-
-
