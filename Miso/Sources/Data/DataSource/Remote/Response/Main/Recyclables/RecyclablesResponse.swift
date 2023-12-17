@@ -4,7 +4,9 @@ struct DetailRecyclablesListResponse: Decodable {
     let id: Int
     let title: String
     let subTitle: String
-    let content: String
+    let recycleMethod: String
+    let recycleTip: String
+    let recycleCaution: String
     let imageUrl: String
     let recyclablesType: String
     let recycleMark: String
@@ -13,6 +15,7 @@ struct DetailRecyclablesListResponse: Decodable {
 struct SearchRecyclablesListResponse: Decodable {
     let title: String
     let imageUrl: String
+    let recycleMethod: String
     let recyclablesType: String
 }
 
