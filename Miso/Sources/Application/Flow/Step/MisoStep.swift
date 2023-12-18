@@ -21,7 +21,9 @@ enum MisoStep: Step {
     case cameraIsRequired
     
     // MARK: - Detail
-    case detailVCIsRequired(UploadRecyclablesListResponse, UIImage)
+    case aiResultVCIsRequired(UploadRecyclablesListResponse, UIImage)
+    case searchResultVCIsRequired(DetailRecyclablesListResponse)
+    
     case coordinateToSearchVCIsRequired
     
     
