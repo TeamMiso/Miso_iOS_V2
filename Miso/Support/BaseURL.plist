@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   BaseURL.plist
+   Miso
+
+   Created by 박준서 on 12/18/23.
+   Copyright (c) 2023 ___ORGANIZATIONNAME___. All rights reserved.
+-->
 <plist version="1.0">
-<dict>
-    <key>Base-API-KEY</key>
-    <string>https://server.miso-gsm.site</string>
-</dict>
+<dict/>
 </plist>

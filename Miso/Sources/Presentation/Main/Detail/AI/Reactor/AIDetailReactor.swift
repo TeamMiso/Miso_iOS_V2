@@ -6,7 +6,7 @@ import RxFlow
 import RxSwift
 import UIKit
 
-class DetailReactor: Reactor, Stepper {
+class AIDetailReactor: Reactor, Stepper {
     
     var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
@@ -52,7 +52,7 @@ class DetailReactor: Reactor, Stepper {
     }
 }
 
-extension DetailReactor {
+extension AIDetailReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         return pointButtonTapped()
     }
@@ -66,7 +66,7 @@ extension DetailReactor {
     }
 }
 
-private extension DetailReactor {
+private extension AIDetailReactor {
     private func pointButtonTapped() -> Observable<Mutation>  {
         userProvider.request(.giveUserPoint(accessToken: accessToken)) { response in
             switch response {

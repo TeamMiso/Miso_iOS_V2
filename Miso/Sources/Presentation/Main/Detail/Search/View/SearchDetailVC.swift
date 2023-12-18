@@ -1,7 +1,7 @@
 import UIKit
 import Kingfisher
 
-final class DetailVC: BaseVC<DetailReactor> {
+final class SearchDetailVC: BaseVC<AIDetailReactor> {
     
     var id: Int = 0
     var contentTitle: String = ""
@@ -171,7 +171,7 @@ final class DetailVC: BaseVC<DetailReactor> {
         }
     }
 
-    override func bindView(reactor: DetailReactor) {
+    override func bindView(reactor: AIDetailReactor) {
         let request = reactor.initialState.uploadRecyclablesList?.recyclablesList[0]
         
         self.id = request?.id ?? 0
@@ -185,7 +185,7 @@ final class DetailVC: BaseVC<DetailReactor> {
         self.recycleMarkUrl = request?.recycleMark ?? ""
         
         pointButton.rx.tap
-            .map {  DetailReactor.Action.pointButtonTapped }
+            .map {  AIDetailReactor.Action.pointButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -220,3 +220,4 @@ final class DetailVC: BaseVC<DetailReactor> {
 
     }
 }
+
