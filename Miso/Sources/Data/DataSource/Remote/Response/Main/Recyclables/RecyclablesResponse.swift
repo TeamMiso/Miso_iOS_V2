@@ -12,7 +12,7 @@ struct DetailRecyclablesListResponse: Decodable {
     let recycleMark: String
 }
 
-struct SearchRecyclablesListResponse: Decodable {
+struct SearchRecyclablesListResponse: Codable {
     let title: String
     let imageUrl: String
     let recycleMethod: String
