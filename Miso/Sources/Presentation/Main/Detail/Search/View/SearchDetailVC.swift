@@ -1,7 +1,7 @@
 import UIKit
 import Kingfisher
 
-final class SearchDetailVC: BaseVC<AIDetailReactor> {
+final class SearchDetailVC: BaseVC<SearchDetailReactor> {
     
     var id: Int = 0
     var contentTitle: String = ""
@@ -9,7 +9,7 @@ final class SearchDetailVC: BaseVC<AIDetailReactor> {
     var recycleMethod: String = ""
     var recycleTip: String = ""
     var recycleCaution: String = ""
-    var image: UIImage?
+    var imageUrl: String = ""
     var recyclablesType: String = ""
     var recycleMarkUrl: String? = ""
     
@@ -92,10 +92,6 @@ final class SearchDetailVC: BaseVC<AIDetailReactor> {
         $0.font = .miso(size: 15, family: .regular)
         $0.numberOfLines = 0
     }
-    
-    private let pointButton = NextStepButton().then {
-        $0.setTitle("10 포인트 받기", for: .normal)
-    }
      
     override func setup() {
         self.navigationController?.navigationBar.prefersLargeTitles = true
@@ -128,8 +124,7 @@ final class SearchDetailVC: BaseVC<AIDetailReactor> {
         }
         scrollView.addSubviews(
             recycleImageView,
-            recycleStackview,
-            pointButton
+            recycleStackview
         )
         view.addSubview(
             scrollView
@@ -160,40 +155,29 @@ final class SearchDetailVC: BaseVC<AIDetailReactor> {
         }
         recycleStackview.snp.makeConstraints {
             $0.top.equalTo(recycleImageView.snp.bottom).offset(16)
-            $0.bottom.equalTo(pointButton.snp.top).offset(-40)
-            $0.leading.trailing.equalToSuperview().inset(16)
-        }
-        pointButton.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(48)
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalToSuperview().inset(40)
+            $0.bottom.equalToSuperview()
+            $0.leading.trailing.equalTo(self.view).inset(16)
         }
     }
 
-    override func bindView(reactor: AIDetailReactor) {
-        let request = reactor.initialState.uploadRecyclablesList?.recyclablesList[0]
+    override func bindView(reactor: SearchDetailReactor) {
+        let request = reactor.initialState.detailRecyclablesList
         
         self.id = request?.id ?? 0
+        self.imageUrl = request?.imageUrl ?? ""
         self.contentTitle = request?.title ?? ""
         self.subTitle = request?.subTitle ?? ""
         self.recycleMethod = request?.recycleMethod ?? ""
         self.recycleTip = request?.recycleTip ?? ""
         self.recycleCaution = request?.recycleCaution ?? ""
-        self.image = reactor.initialState.originalImage
         self.recyclablesType = request?.recyclablesType ?? ""
         self.recycleMarkUrl = request?.recycleMark ?? ""
-        
-        pointButton.rx.tap
-            .map {  AIDetailReactor.Action.pointButtonTapped }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
         
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationItem.title = contentTitle
-        recycleImageView.image = self.image
+        recycleImageView.kf.setImage(with: URL(string: imageUrl))
         subTitleLabel.text = self.subTitle
         
         switch recyclablesType {
