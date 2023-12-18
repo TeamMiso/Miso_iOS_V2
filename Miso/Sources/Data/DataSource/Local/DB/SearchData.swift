@@ -76,7 +76,6 @@ class SearchDataDB {
         }
     }
     
-    
     func insertData(title: String, imageUrl: String, recycleMethod: String, recyclablesType: String) {
         let insertQuery = "INSERT INTO myDB (id, title, imageUrl, recycleMethod, recyclablesType) VALUES (?,?,?,?,?);"
         var statement: OpaquePointer? = nil
@@ -107,7 +106,6 @@ class SearchDataDB {
             print("에러: \(error)")
         }
     }
-    
     
     func readData() -> [SearchRecyclablesListResponse] {
         let query = "select * from myDB"
