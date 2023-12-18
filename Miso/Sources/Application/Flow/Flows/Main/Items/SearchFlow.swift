@@ -40,13 +40,13 @@ class SearchFlow: Flow {
             return coordinateToSearchTabbar()
         
         case let .aiResultVCIsRequired(data, originalImage):
-            return coordinateToAIDetailVC(data: data, originalImage: originalImage)
+            return coordinateToAIDetail(data: data, originalImage: originalImage)
             
         case .coordinateToSearchVCIsRequired:
             return coordinateToSearchVC()
             
         case let .searchResultVCIsRequired(data):
-            return coordinateToSearchVC(data: data)
+            return coordinateToSearchDetail(data: data)
             
         default:
             return .none
@@ -56,14 +56,14 @@ class SearchFlow: Flow {
 }
 private extension SearchFlow {
     
-    private func coordinateToSearchVC(data: DetailRecyclablesListResponse) -> FlowContributors {
+    private func coordinateToSearchDetail(data: DetailRecyclablesListResponse) -> FlowContributors {
         let reactor = SearchDetailReactor(detailRecyclablesList: data)
         let vc = SearchDetailVC(reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    private func coordinateToAIDetailVC(data: UploadRecyclablesListResponse, originalImage: UIImage) -> FlowContributors {
+    private func coordinateToAIDetail(data: UploadRecyclablesListResponse, originalImage: UIImage) -> FlowContributors {
         let reactor = AIDetailReactor(uploadRecyclablesList: data, originalImage: originalImage)
         let vc = AIDetailVC(reactor)
         self.rootViewController.pushViewController(vc, animated: true)
