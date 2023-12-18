@@ -10,6 +10,7 @@ class SearchDataDB {
     
     init() {
         self.db = createDB()
+        createTable()
     }
     
     func createDB() -> OpaquePointer? {
@@ -23,6 +24,7 @@ class SearchDataDB {
             
             if sqlite3_open(dbPath.path, &db) == SQLITE_OK {
                 print("Success create db Path")
+                print("dir = \n\(dbPath)\n")
                 return db
             }
         }
@@ -35,8 +37,8 @@ class SearchDataDB {
     
     func createTable() {
         let query = """
-        create table if not exists myDB(
-            id INTEGER primary key autoincrement,
+        CREATE TABLE IF NOT EXISTS myDB(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             imageUrl TEXT NOT NULL,
             recycleMethod TEXT NOT NULL,
@@ -74,19 +76,23 @@ class SearchDataDB {
         }
     }
     
+    
     func insertData(title: String, imageUrl: String, recycleMethod: String, recyclablesType: String) {
-        let inserQuery = "insert into myDB (title, imageUrl, recycleMethod, recyclablesType) values (?,?,?,?);"
+        let insertQuery = "INSERT INTO myDB (id, title, imageUrl, recycleMethod, recyclablesType) VALUES (?,?,?,?,?);"
         var statement: OpaquePointer? = nil
+        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
         
         do {
             
-            if sqlite3_prepare_v2(self.db, inserQuery, -1, &statement, nil) == SQLITE_OK {
-                sqlite3_bind_text(statement, 1, title, -1, nil)
-                sqlite3_bind_text(statement, 2, imageUrl, -1, nil)
-                sqlite3_bind_text(statement, 3, recycleMethod, -1, nil)
-                sqlite3_bind_text(statement, 4, recyclablesType, -1, nil)
-            } 
-            else {
+            if sqlite3_prepare_v2(self.db, insertQuery, -1, &statement, nil) == SQLITE_OK {
+            
+                sqlite3_bind_text(statement, 2, title, -1, SQLITE_TRANSIENT)
+                sqlite3_bind_text(statement, 3, imageUrl, -1, SQLITE_TRANSIENT)
+                sqlite3_bind_text(statement, 4, recycleMethod, -1, SQLITE_TRANSIENT)
+                sqlite3_bind_text(statement, 5, recyclablesType, -1, SQLITE_TRANSIENT)
+                
+                
+            } else {
                 print("insert Data prepare fail")
             }
             
@@ -97,11 +103,11 @@ class SearchDataDB {
             }
             
             sqlite3_finalize(statement)
-        }
-        catch {
-            print("JsonEncoder Error")
+        } catch {
+            print("에러: \(error)")
         }
     }
+    
     
     func readData() -> [SearchRecyclablesListResponse] {
         let query = "select * from myDB"
@@ -109,22 +115,29 @@ class SearchDataDB {
         
         var result: [SearchRecyclablesListResponse] = []
         
-        if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
-            while sqlite3_step(statement) == SQLITE_ROW {
-                
-                let title = String(cString: sqlite3_column_text(statement, 0))
-                let imageUrl = String(cString: sqlite3_column_text(statement, 1))
-                let recycleMethod = String(cString: sqlite3_column_text(statement, 2))
-                let recyclablesType = String(cString: sqlite3_column_text(statement, 3))
-                
-                result.append(SearchRecyclablesListResponse(
-                    title: String(title),
-                    imageUrl: String(imageUrl),
-                    recycleMethod: String(recycleMethod),
-                    recyclablesType: String(recyclablesType))
-                )
-            }
+        if sqlite3_prepare(self.db, query, -1, &statement, nil) != SQLITE_OK {
+            let errorMessage = String(cString: sqlite3_errmsg(db)!)
+            print("error while prepare: \(errorMessage)")
+            return result
         }
+        
+        
+        while sqlite3_step(statement) == SQLITE_ROW {
+            
+            let title = String(cString: sqlite3_column_text(statement, 1))
+            let imageUrl = String(cString: sqlite3_column_text(statement, 2))
+            let recycleMethod = String(cString: sqlite3_column_text(statement, 3))
+            let recyclablesType = String(cString: sqlite3_column_text(statement, 4))
+            
+            result.append(SearchRecyclablesListResponse(
+                title: title,
+                imageUrl: imageUrl,
+                recycleMethod: recycleMethod,
+                recyclablesType: recyclablesType)
+            )
+        }
+        sqlite3_finalize(statement)
+        
         return result
     }
     
