@@ -23,7 +23,7 @@ final class TabBarFlow: Flow {
     private let rootViewController = MisoTabBarVC()
     
     private var searchFlow = SearchFlow()
-    private var marketFlow = SearchFlow()
+    private var marketFlow = MarketFlow()
     private var inquiryFlow = SearchFlow()
     private var settingFlow = SearchFlow()
     
@@ -103,7 +103,7 @@ private extension TabBarFlow {
         }
         return .multiple(flowContributors: [
             .contribute(withNextPresentable: searchFlow, withNextStepper: searchFlow.stepper),
-            .contribute(withNextPresentable: marketFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.marketTabbarIsRequired)),
+            .contribute(withNextPresentable: marketFlow, withNextStepper: marketFlow.stepper),
             .contribute(withNextPresentable: inquiryFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.inquiryTabbarIsRequired)),
             .contribute(withNextPresentable: settingFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.settingTabbarIsRequired))
         ])
