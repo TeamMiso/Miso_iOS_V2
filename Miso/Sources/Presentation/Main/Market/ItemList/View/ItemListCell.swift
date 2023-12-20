@@ -35,12 +35,6 @@ final class ItemListCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with item: ItemListResponse.ItemList) {
-        itemImage.kf.setImage(with: URL(string: item.imageUrl))
-        itemNameLabel.text = item.name
-        itemPointLabel.text = String(item.price)
-    }
-    
     func addViews() {
         addSubviews(
             itemImage,
