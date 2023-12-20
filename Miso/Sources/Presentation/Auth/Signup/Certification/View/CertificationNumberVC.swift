@@ -55,6 +55,6 @@ extension CertificationVC: AEOTPTextFieldDelegate {
     
     func didUserFinishEnter(the code: String) {
         print(code)
-        reactor.action.onNext(.certificationIsCompleted(randomKey: code))
+        reactor?.action.onNext(.certificationIsCompleted(randomKey: code))
     }
 }
