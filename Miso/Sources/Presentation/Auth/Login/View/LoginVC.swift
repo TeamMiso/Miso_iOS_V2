@@ -4,7 +4,7 @@ import SnapKit
 import Moya
 
 final class LoginVC: BaseVC<AuthReactor> {
-
+    
     private let containView = UIView()
     
     private let misoLabel = UILabel().then {
@@ -56,21 +56,6 @@ final class LoginVC: BaseVC<AuthReactor> {
         $0.setTitle("회원가입", for: .normal)
         $0.setTitleColor(UIColor(rgb: 0x3484DB), for: .normal)
         $0.titleLabel?.font = .miso(size: 15, family: .regular)
-    }
-    
-    override func bind() {
-        RxKeyboard.instance.visibleHeight
-            .skip(1)    // 초기 값 버리기
-            .drive(onNext: { [weak self] keyboardVisibleHeight in
-                guard let self = self else { return }
-                self.containView.snp.updateConstraints {
-                    $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(16)
-                }
-                UIView.animate(withDuration: 0.3) {
-                    self.view.layoutIfNeeded()
-                }
-            })
-            .disposed(by: disposeBag)
     }
     
     override func setup() {
@@ -158,6 +143,18 @@ final class LoginVC: BaseVC<AuthReactor> {
     }
     
     override func bindView(reactor: AuthReactor) {
+        RxKeyboard.instance.visibleHeight
+            .skip(1)    // 초기 값 버리기
+            .drive(onNext: { [weak self] keyboardVisibleHeight in
+                guard let self = self else { return }
+                self.containView.snp.updateConstraints {
+                    $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(16)
+                }
+                UIView.animate(withDuration: 0.3) {
+                    self.view.layoutIfNeeded()
+                }
+            })
+            .disposed(by: disposeBag)
         loginButton.rx.tap
             .map {  AuthReactor.Action.loginIsCompleted (
                 email: self.emailTextField.text ?? "",
@@ -178,7 +175,7 @@ final class LoginVC: BaseVC<AuthReactor> {
     }
     
 }
- 
+
 extension LoginVC: UITextFieldDelegate{
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
