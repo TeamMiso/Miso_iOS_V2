@@ -2,8 +2,8 @@ import Foundation
 import Moya
 
 enum ItemAPI {
-    case itemList(accessToken: String)
-    case itemDetailList(id: String, accessToken: String)
+    case getItemList(accessToken: String)
+    case getItemDetailList(id: String, accessToken: String)
 }
 extension ItemAPI: TargetType {
     
@@ -13,16 +13,16 @@ extension ItemAPI: TargetType {
     
     var path: String {
         switch self {
-        case .itemList:
+        case .getItemList:
             return ""
-        case let .itemDetailList(id, accessToken):
+        case let .getItemDetailList(id, accessToken):
             return "/\(id)"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .itemList, .itemDetailList:
+        case .getItemList, .getItemDetailList:
             return .get
         }
     }
@@ -40,9 +40,9 @@ extension ItemAPI: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case let .itemList(accessToken):
+        case let .getItemList(accessToken):
             return ["Authorization": accessToken]
-        case let .itemDetailList(id, accessToken):
+        case let .getItemDetailList(id, accessToken):
             return ["Authorization": accessToken]
         default:
             return ["Content-Type": "application/json"]
