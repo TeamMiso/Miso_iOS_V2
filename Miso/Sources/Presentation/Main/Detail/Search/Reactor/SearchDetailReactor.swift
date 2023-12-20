@@ -11,18 +11,6 @@ class SearchDetailReactor: Reactor, Stepper {
     var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
     var initialState: State
-    let userProvider = MoyaProvider<UserAPI>(plugins: [NetworkLoggerPlugin()])
-    
-    let keychain = Keychain()
-    let misoRefreshToken = MisoRefreshToken.shared
-    lazy var accessToken: String = {
-        do {
-            return "Bearer " + (try keychain.load(type: .accessToken))
-        } catch {
-            print("Refresh 토큰을 불러오는 중 에러 발생: \(error)")
-            return "Bearer "
-        }
-    }()
     
     var detailRecyclablesList: DetailRecyclablesListResponse?
 

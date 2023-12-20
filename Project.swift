@@ -44,6 +44,10 @@ let project = Project(
             url: "https://github.com/onevcat/Kingfisher.git",
             .upToNextMajor(from: "7.10.0")
         ),
+        .package(
+            url: "https://github.com/RxSwiftCommunity/RxDataSources.git",
+            .upToNextMajor(from: "5.0.0")
+        )
     ],
     settings: nil,
     targets: [
@@ -64,10 +68,12 @@ let project = Project(
                 .package(product: "IQKeyboardManagerSwift"),
                 .package(product: "SnapKit"),
                 .package(product: "Moya"),
+                .package(product: "RxMoya"),
                 .package(product: "Then"),
                 .package(product: "AEOTPTextField"),
                 .package(product: "ReactorKit"),
                 .package(product: "Kingfisher"),
+                .package(product: "RxDataSources")
             ]
         ),
     ],

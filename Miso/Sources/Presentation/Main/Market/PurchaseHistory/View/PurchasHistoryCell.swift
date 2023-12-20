@@ -4,9 +4,9 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class ItemListCell: UICollectionViewCell {
+final class PurchaseHistoryCell: UICollectionViewCell {
     
-    static let identifier = "ItemListCell"
+    static let identifier = "PurchaseHistoryCell"
     
     var itemImage = UIImageView().then {
         $0.layer.cornerRadius = 8
@@ -17,24 +17,30 @@ final class ItemListCell: UICollectionViewCell {
         $0.textColor = UIColor(rgb: 0x000000)
         $0.font = .miso(size: 20, family: .semiBold)
     }
-
+    
     var itemPointLabel = UILabel().then {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 15, family: .regular)
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         addViews()
         setLayout()
     }
-
+    
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    func configure(with item: ItemListResponse.ItemList) {
+        itemImage.kf.setImage(with: URL(string: item.imageUrl))
+        itemNameLabel.text = item.name
+        itemPointLabel.text = String(item.price)
+    }
+    
     func addViews() {
         addSubviews(
             itemImage,
@@ -42,7 +48,7 @@ final class ItemListCell: UICollectionViewCell {
             itemPointLabel
         )
     }
-
+    
     func setLayout() {
         itemImage.snp.makeConstraints {
             $0.height.equalTo(168)
