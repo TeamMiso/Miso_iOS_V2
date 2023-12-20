@@ -73,6 +73,11 @@ final class MarketVC: BaseVC<MarketReactor> {
             .map { _ in MarketReactor.Action.fetchItemList }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+
+        purchaseHistoryButton.rx.tap
+            .map { Reactor.Action.purchaseHistoryButtonDidTap }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     override func bindState(reactor: MarketReactor) {
@@ -91,7 +96,10 @@ final class MarketVC: BaseVC<MarketReactor> {
     }
     
     override func bindView(reactor: MarketReactor) {
-        purchaseHistoryButton.rx.tap
+       purchaseHistoryButton.rx.tap
+            .map {  MarketReactor.Action.fetchItemList }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
             
         itemListCollectionView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
