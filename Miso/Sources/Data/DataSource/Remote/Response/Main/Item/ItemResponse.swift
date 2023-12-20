@@ -1,19 +1,23 @@
 import Foundation
 
-let itemList: [itemListResponse] = []
-
-struct itemListResponse: Codable {
-    let id: Int
-    let price: Int
-    let amount: Int
-    let name: String
-    let imageUrl: String
+struct ItemListResponse: Decodable {
+    
+    let itemList: [ItemList]
+    
+    struct ItemList: Decodable {
+        let id: Int
+        let price: Int
+        let amount: Int
+        let name: String
+        let imageUrl: String
+    }
 }
 
-struct itemDetailListResponse: Codable {
+struct ItemDetailListResponse: Decodable {
     let id: Int
     let price: Int
     let amount: Int
     let name: String
+    let content: String
     let imageUrl: String
 }
