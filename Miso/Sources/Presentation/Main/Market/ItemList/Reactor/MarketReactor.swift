@@ -29,6 +29,7 @@ class MarketReactor: Reactor, Stepper {
     enum Action {
         case fetchItemList
         case itemDetailTapped(productId: String)
+        case purchaseHistoryButtonDidTap
     }
     
     enum Mutation {
@@ -51,6 +52,9 @@ extension MarketReactor {
             return getItemList()
         case let .itemDetailTapped(productId):
             return toItemDetailVC(productId: productId)
+        case .purchaseHistoryButtonDidTap:
+            steps.accept(MisoStep.purchaseHistoryVCIsRequired)
+            return .empty()
         }
     }
     
