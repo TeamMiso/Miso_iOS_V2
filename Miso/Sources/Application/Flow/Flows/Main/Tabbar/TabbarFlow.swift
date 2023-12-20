@@ -104,8 +104,8 @@ private extension TabBarFlow {
         return .multiple(flowContributors: [
             .contribute(withNextPresentable: searchFlow, withNextStepper: searchFlow.stepper),
             .contribute(withNextPresentable: marketFlow, withNextStepper: marketFlow.stepper),
-            .contribute(withNextPresentable: inquiryFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.inquiryTabbarIsRequired)),
-            .contribute(withNextPresentable: settingFlow, withNextStepper: OneStepper(withSingleStep: MisoStep.settingTabbarIsRequired))
+            .contribute(withNextPresentable: inquiryFlow, withNextStepper: inquiryFlow.stepper),
+            .contribute(withNextPresentable: settingFlow, withNextStepper: settingFlow.stepper)
         ])
     }
 }
