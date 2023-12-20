@@ -18,14 +18,15 @@ enum MisoStep: Step {
     case settingTabbarIsRequired
     
     // MARK: - Search
+    case coordinateToSearchVCIsRequired
     case cameraIsRequired
-    
-    // MARK: - Detail
     case aiResultVCIsRequired(UploadRecyclablesListResponse, UIImage)
     case searchResultVCIsRequired(DetailRecyclablesListResponse)
     
-    case coordinateToSearchVCIsRequired
-    
+    // MARK: - Market
+    case purchaseHistoryVCIsRequired
+    case itemDetailVCIsRequired(ItemDetailListResponse)
+    case coordinateToMarketVCIsRequired
     
     //MARK: Alert
     case alert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction])
