@@ -1,60 +1,66 @@
 import UIKit
-import RxCocoa
-import RxSwift
-import Then
 import ReactorKit
+import Then
+import RxSwift
 import SnapKit
 
-class BaseVC<T: Reactor>: UIViewController, View {
-    let reactor: T
-    var disposeBag = DisposeBag()
-    let bounds = UIScreen.main.bounds
-    let keychain = Keychain()
+class BaseVC<T: Reactor>: UIViewController {
+    let bound = UIScreen.main.bounds
+    var disposeBag: DisposeBag = .init()
     
-//    lazy var userAuthority = keychain.read(key: Const.KeychainKey.authority)
-    
-    init(_ reactor: T) {
-        self.reactor = reactor
-        super .init(nibName: nil, bundle: nil)
+    private let indicatorBackgroundView = UIView().then {
+        $0.isHidden = true
+        $0.backgroundColor = .black.withAlphaComponent(0.4)
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-        
         setup()
-        bind()
         addView()
         setLayout()
-        bind(reactor: reactor)
+        configureVC()
+        configureNavigation()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setLayoutSubviews()
+    }
+
+    init(reactor: T?) {
+        super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        print("\(type(of: self)): \(#function)")
+    }
+
     func setup() {}
-    
-    func bind() {}
-    
     func addView() {}
-    
     func setLayout() {}
-    
+    func setLayoutSubviews() {}
+    func configureVC() {}
+    func configureNavigation() {}
+
+    func bindView(reactor: T) {}
+    func bindAction(reactor: T) {}
+    func bindState(reactor: T) {}
+}
+
+extension BaseVC: View {
     func bind(reactor: T) {
         bindView(reactor: reactor)
         bindAction(reactor: reactor)
         bindState(reactor: reactor)
     }
-    
-    func bindView(reactor: T) {}
-    func bindAction(reactor: T) {}
-    func bindState(reactor: T) {}
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-
 }
-

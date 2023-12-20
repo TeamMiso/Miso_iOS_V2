@@ -46,21 +46,21 @@ private extension AuthFlow {
     
     func coordinateToLogin() -> FlowContributors {
         let reactor = AuthReactor()
-        let vc = LoginVC(reactor)
+        let vc = LoginVC(reactor: reactor)
         self.rootViewController.setViewControllers([vc], animated: false)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
     func coordinateToSignup() -> FlowContributors {
         let reactor = AuthReactor()
-        let vc = SignupVC(reactor)
+        let vc = SignupVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
     func coordinateCertification() -> FlowContributors {
         let reactor = AuthReactor()
-        let vc = CertificationVC(reactor)
+        let vc = CertificationVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }

@@ -1,10 +1,3 @@
-//
-//  GOMSStep.swift
-//  GOMS-iOS
-//
-//  Created by 선민재 on 2023/04/18.
-//
-
 import RxFlow
 import UIKit
 
@@ -25,11 +18,15 @@ enum MisoStep: Step {
     case settingTabbarIsRequired
     
     // MARK: - Search
+    case coordinateToSearchVCIsRequired
     case cameraIsRequired
+    case aiResultVCIsRequired(UploadRecyclablesListResponse, UIImage)
+    case searchResultVCIsRequired(DetailRecyclablesListResponse)
     
-    // MARK: - UploadImage
-    case detailVCIsRequired(UploadRecyclablesListResponse)
-    
+    // MARK: - Market
+    case purchaseHistoryVCIsRequired
+    case itemDetailVCIsRequired(ItemDetailListResponse)
+    case coordinateToMarketVCIsRequired
     
     //MARK: Alert
     case alert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction])
