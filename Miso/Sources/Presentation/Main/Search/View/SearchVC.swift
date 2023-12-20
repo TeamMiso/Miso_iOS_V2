@@ -206,7 +206,7 @@ final class SearchVC: BaseVC<SearchReactor> {
         
         toDetailButton.rx.tap
             .map { [weak self] _ -> SearchReactor.State? in
-                return self?.reactor.currentState
+                return self?.reactor?.currentState
             }
             .compactMap { $0 }
             .subscribe(onNext: { [weak self] currentState in
@@ -223,7 +223,7 @@ final class SearchVC: BaseVC<SearchReactor> {
                     recyclablesType: recyclablesType
                 )
                 
-                self.reactor.action.onNext(.detailButtonTapped(recycleType: recyclablesType))
+                self.reactor?.action.onNext(.detailButtonTapped(recycleType: recyclablesType))
             })
             .disposed(by: disposeBag)
     }
@@ -275,7 +275,7 @@ extension SearchVC: UIImagePickerControllerDelegate, UINavigationControllerDeleg
         if let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
            let imageData = pickedImage.jpegData(compressionQuality: 0.8) {
             picker.dismiss(animated: true) {
-                self.reactor.action.onNext(.cameraButtonTapped(imageData: imageData, originalImage: pickedImage))
+                self.reactor?.action.onNext(.cameraButtonTapped(imageData: imageData, originalImage: pickedImage))
             }
         } else {
             print("이미지를 Data로 변환하는 데 실패했습니다.")
@@ -290,7 +290,7 @@ extension SearchVC: UIImagePickerControllerDelegate, UINavigationControllerDeleg
 extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: 80)
+        return CGSize(width: UIScreen.main.bounds.width - 32, height: 80)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
