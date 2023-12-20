@@ -75,7 +75,6 @@ private extension AIDetailReactor {
                 
                 switch statusCode{
                 case 200:
-                    print("point 주기")
                     self.steps.accept(MisoStep.coordinateToSearchVCIsRequired)
                 case 401:
                     print("토큰이 유효하지 않습니다.")
