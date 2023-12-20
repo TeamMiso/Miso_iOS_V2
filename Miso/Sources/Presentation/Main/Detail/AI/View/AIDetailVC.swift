@@ -185,7 +185,7 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
         self.recycleMarkUrl = request?.recycleMark ?? ""
         
         pointButton.rx.tap
-            .map {  AIDetailReactor.Action.pointButtonTapped }
+            .map { AIDetailReactor.Action.pointButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
