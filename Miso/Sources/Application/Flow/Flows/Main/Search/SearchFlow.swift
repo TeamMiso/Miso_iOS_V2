@@ -40,13 +40,13 @@ class SearchFlow: Flow {
             return coordinateToSearchTabbar()
         
         case let .aiResultVCIsRequired(data, originalImage):
-            return coordinateToAIDetail(data: data, originalImage: originalImage)
+            return coordinateToAIDetailVC(data: data, originalImage: originalImage)
             
         case .coordinateToSearchVCIsRequired:
             return coordinateToSearchVC()
             
         case let .searchResultVCIsRequired(data):
-            return coordinateToSearchDetail(data: data)
+            return coordinateToSearchDetailVC(data: data)
             
         default:
             return .none
@@ -56,23 +56,23 @@ class SearchFlow: Flow {
 }
 private extension SearchFlow {
     
-    private func coordinateToSearchDetail(data: DetailRecyclablesListResponse) -> FlowContributors {
+    private func coordinateToSearchDetailVC(data: DetailRecyclablesListResponse) -> FlowContributors {
         let reactor = SearchDetailReactor(detailRecyclablesList: data)
-        let vc = SearchDetailVC(reactor)
+        let vc = SearchDetailVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    private func coordinateToAIDetail(data: UploadRecyclablesListResponse, originalImage: UIImage) -> FlowContributors {
+    private func coordinateToAIDetailVC(data: UploadRecyclablesListResponse, originalImage: UIImage) -> FlowContributors {
         let reactor = AIDetailReactor(uploadRecyclablesList: data, originalImage: originalImage)
-        let vc = AIDetailVC(reactor)
+        let vc = AIDetailVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
     private func coordinateToSearchTabbar() -> FlowContributors {
         let reactor = SearchReactor()
-        let vc = SearchVC(reactor)
+        let vc = SearchVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
@@ -80,7 +80,7 @@ private extension SearchFlow {
     private func coordinateToSearchVC() -> FlowContributors {
         print("coordinate")
         let reactor = SearchReactor()
-        let vc = SearchVC(reactor)
+        let vc = SearchVC(reactor: reactor)
         self.rootViewController.popToRootViewController(animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
