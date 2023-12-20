@@ -6,8 +6,6 @@ import RxCocoa
 
 final class RecycleListCell: UICollectionViewCell {
     
-    var cellDisposeBag = DisposeBag()
-    
     static let identifier = "RecycleListCell"
     
     var recycleNameLabel = UILabel().then {
