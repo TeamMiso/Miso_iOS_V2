@@ -17,7 +17,6 @@ struct AppStepper: Stepper {
             case 200:
                 print(misoRefreshToken.statusCode)
                 steps.accept(MisoStep.tabBarIsRequired)
-//                steps.accept(MisoStep.loginVCIsRequired)
             default:
                 print(misoRefreshToken.statusCode)
                 steps.accept(MisoStep.loginVCIsRequired)
@@ -36,6 +35,7 @@ final class AppFlow: Flow {
     
     init(window: UIWindow) {
         self.window = window
+        Keychain().delete(type: .refreshToken)
     }
         
     deinit{
