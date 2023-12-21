@@ -1,130 +1,66 @@
 import UIKit
 import Kingfisher
 
-final class DetailInquiryVC: BaseVC<SearchDetailReactor> {
+final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
     
-    var id: Int = 0
-    var contentTitle: String = ""
-    var subTitle: String = ""
-    var recycleMethod: String = ""
-    var recycleTip: String = ""
-    var recycleCaution: String = ""
-    var imageUrl: String = ""
-    var recyclablesType: String = ""
-    var recycleMarkUrl: String? = ""
+    var inquiryId: Int = 0
+    var inquiryDate: String = ""
+    var inquiryTitle: String = ""
+    var inquiryContent: String = ""
+    var inquiryImageUrl: String = ""
+    var inquiryStatus: String = ""
     
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .white
     }
     
-    private let recycleImageView = UIImageView()
-    
-    private let recycleQuestionLabel = UILabel().then {
-        $0.text = "이 쓰레기는 어떤 쓰레기인가요?"
-        $0.textColor = UIColor(rgb: 0x000000)
-        $0.font = .miso(size: 20, family: .extraBold)
-    }
-    
-    private let subTitleRecycleTypeStackview = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
+    var dateAndStatusStackview = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 8
         $0.distribution = .equalSpacing
         $0.alignment = .fill
     }
-    private let subTitleLabel = UILabel().then {
-        $0.textColor = UIColor(rgb: 0x3484DB)
+    
+    private let dateLabel = UILabel().then {
+        $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 15, family: .regular)
     }
     
-    private let recycleTypeStackview = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-        $0.distribution = .fill
-        $0.alignment = .leading
-    }
-    
-    private let recycleTypeLabel = UILabel().then {
-        $0.textColor = UIColor(rgb: 0x595959)
+    private let statusLabel = UILabel().then {
         $0.font = .miso(size: 15, family: .regular)
     }
 
-    private let recycleTypeImageView = UIImageView()
+    private let inquiryImageView = UIImageView()
     
-    private let recycleStackview = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 16
-        $0.distribution = .fill
-        $0.alignment = .leading
-    }
-    
-    private let recycleMethodLabel = UILabel().then {
-        $0.text = "🤔 어떻게 분리배출하나요 ?"
-        $0.textColor = UIColor(rgb: 0x000000)
-        $0.font = .miso(size: 20, family: .semiBold)
-    }
-    
-    private let recycleMethodDetailLabel = UILabel().then {
-        $0.numberOfLines = 0
+    private let inquiryContentTitleLabel = UILabel().then {
+        $0.text = "문의 내용"
         $0.textColor = UIColor(rgb: 0x595959)
-        $0.font = .miso(size: 15, family: .regular)
-    }
-    
-    private let recycleTipLabel = UILabel().then {
-        $0.text = "😎 알아두면 좋은 점"
-        $0.textColor = UIColor(rgb: 0x000000)
         $0.font = .miso(size: 20, family: .semiBold)
+        $0.numberOfLines = 0
     }
     
-    private let recycleTipDetailLabel = UILabel().then {
+    private let inquiryContentLabel = UILabel().then {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 15, family: .regular)
         $0.numberOfLines = 0
     }
     
-    private let recycleCautionLabel = UILabel().then {
-        $0.text = "⚠️ 유의할 점"
-        $0.textColor = UIColor(rgb: 0x000000)
-        $0.font = .miso(size: 20, family: .semiBold)
-    }
-    
-    private let recycleCautionDetailLabel = UILabel().then {
-        $0.textColor = UIColor(rgb: 0x595959)
-        $0.font = .miso(size: 15, family: .regular)
-        $0.numberOfLines = 0
-    }
-     
     override func setup() {
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     override func addView() {
         [
-            recycleTypeLabel,
-            recycleTypeImageView
+            dateLabel,
+            statusLabel
         ].forEach{
-            recycleTypeStackview.addArrangedSubview($0)
-        }
-        [
-            subTitleLabel,
-            recycleTypeStackview
-        ].forEach{
-            subTitleRecycleTypeStackview.addArrangedSubview($0)
-        }
-        [
-            recycleQuestionLabel,
-            subTitleRecycleTypeStackview,
-            recycleMethodLabel,
-            recycleMethodDetailLabel,
-            recycleTipLabel,
-            recycleTipDetailLabel,
-            recycleCautionLabel,
-            recycleCautionDetailLabel
-        ].forEach{
-            recycleStackview.addArrangedSubview($0)
+            dateAndStatusStackview.addArrangedSubview($0)
         }
         scrollView.addSubviews(
-            recycleImageView,
-            recycleStackview
+            dateAndStatusStackview,
+            inquiryImageView,
+            inquiryContentTitleLabel,
+            inquiryContentLabel
         )
         view.addSubview(
             scrollView
@@ -136,71 +72,63 @@ final class DetailInquiryVC: BaseVC<SearchDetailReactor> {
             $0.top.bottom.equalTo(self.view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
         }
-        recycleImageView.snp.makeConstraints {
+        dateAndStatusStackview.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.height.equalTo(393)
+            $0.leading.equalToSuperview().offset(16)
+        }
+        inquiryImageView.snp.makeConstraints {
+            $0.height.equalTo((bound.height) / 2.16793893)
             $0.width.equalToSuperview()
+            $0.top.equalTo(dateAndStatusStackview.snp.bottom).offset(4)
+            
         }
-        recycleTypeStackview.snp.makeConstraints {
-            $0.height.equalTo(24)
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(240)
+        inquiryContentTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(inquiryImageView.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(16)
         }
-        recycleTypeImageView.snp.makeConstraints {
-            $0.height.width.equalTo(24)
+        inquiryContentLabel.snp.makeConstraints {
+            $0.top.equalTo(inquiryContentTitleLabel.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(16)
         }
-        subTitleRecycleTypeStackview.snp.makeConstraints {
-            $0.height.equalTo(52)
-            $0.leading.equalToSuperview()
-        }
-        recycleStackview.snp.makeConstraints {
-            $0.top.equalTo(recycleImageView.snp.bottom).offset(16)
-            $0.bottom.equalToSuperview()
-            $0.leading.trailing.equalTo(self.view).inset(16)
-        }
-    }
-
-    override func bindView(reactor: SearchDetailReactor) {
-        let request = reactor.initialState.detailRecyclablesList
-        
-        self.id = request?.id ?? 0
-        self.imageUrl = request?.imageUrl ?? ""
-        self.contentTitle = request?.title ?? ""
-        self.subTitle = request?.subTitle ?? ""
-        self.recycleMethod = request?.recycleMethod ?? ""
-        self.recycleTip = request?.recycleTip ?? ""
-        self.recycleCaution = request?.recycleCaution ?? ""
-        self.recyclablesType = request?.recyclablesType ?? ""
-        self.recycleMarkUrl = request?.recycleMark ?? ""
         
     }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        self.navigationItem.title = contentTitle
-        recycleImageView.kf.setImage(with: URL(string: imageUrl))
-        subTitleLabel.text = self.subTitle
-        
-        switch recyclablesType {
-        case "CLOTHING":
-            recycleTypeLabel.text = "분류 : 의류"
-        case "PLASTIC":
-            recycleTypeLabel.text = "분류 : 플라스틱"
-        case "METAL":
-            recycleTypeLabel.text = "분류 : 고철"
-        case "PAPER_PACK":
-            recycleTypeLabel.text = "분류 : 종이"
-        case "GENERAL_TRASH":
-            recycleTypeLabel.text = "분류 : 일반쓰레기"
-        case "GLASS":
-            recycleTypeLabel.text = "분류 : 유리"
-        default:
-            recycleTypeLabel.text = "분류 : "
-        }
-        
-        recycleTypeImageView.kf.setImage(with: URL(string: recycleMarkUrl ?? ""))
-        recycleMethodDetailLabel.text = self.recycleMethod
-        recycleTipDetailLabel.text = self.recycleTip
-        recycleCautionDetailLabel.text = self.recycleCaution
+    
+    override func bindState(reactor: DetailInquiryReactor) {
+        reactor.state
+            .map { $0.detailInquiryResponse }
+            .subscribe(onNext: { response in
+                guard let response = response else { return }
+                
+                self.inquiryId = response.id
+                self.inquiryDate = response.inquiryDate
+                self.inquiryTitle = response.title
+                self.inquiryContent = response.content
+                self.inquiryImageUrl = response.imageUrl
+                self.inquiryStatus = response.inquiryStatus
+                
+                let dateStr = self.inquiryDate
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'H:mm:ss.SSS" // 23.12.20
+                let convertDate = dateFormatter.date(from: dateStr) // Date 타입으로 변환
+                
+                let stringFormatter = DateFormatter()
+                stringFormatter.dateFormat = "yyyy.MM.dd"
+                let convertStr = stringFormatter.string(from: convertDate!)
+                
+                if response.inquiryStatus == "WAIT" {
+                    self.statusLabel.text = "검토중"
+                    self.statusLabel.textColor = UIColor(rgb: 0xBFBFBF)
+                } else {
+                    self.statusLabel.text = "답변 완료"
+                    self.statusLabel.textColor = UIColor(rgb: 0x25D07D)
+                }
+                
+                self.navigationItem.title = self.inquiryTitle
+                self.dateLabel.text = convertStr
+                self.inquiryImageView.kf.setImage(with: URL(string: self.inquiryImageUrl))
+                self.inquiryContentLabel.text = self.inquiryContent
 
+            })
+            .disposed(by: disposeBag)
     }
 }
