@@ -1,8 +1,23 @@
-//
-//  InquiryResponse.swift
-//  Miso
-//
-//  Created by 박준서 on 12/21/23.
-//
-
 import Foundation
+
+struct MyInquiryResponse: Decodable {
+    
+    let inquiryList: [MyInquiryList]
+    
+    struct MyInquiryList: Decodable {
+        let id: Int
+        let inquiryDate: String
+        let title: String
+        let imageUrl: String
+        let inquiryStatus: String
+    }
+}
+
+struct DetailInquiryResponse: Decodable {
+    let id: Int
+    let inquiryDate: String
+    let title: String
+    let content: String
+    let imageUrl: String
+    let inquiryStatus: String
+}
