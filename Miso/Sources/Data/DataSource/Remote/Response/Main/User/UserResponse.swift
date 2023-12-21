@@ -1,6 +1,6 @@
 import Foundation
 
-struct getUserInfoResponse: Codable {
+struct GetUserInfoResponse: Codable {
     let id: UUID
     let email: String
     let password: String
@@ -8,6 +8,6 @@ struct getUserInfoResponse: Codable {
     let role: String
 }
 
-struct getUserPointRespone: Codable {
+struct GetUserPointRespone: Codable {
     let point: Int
 }

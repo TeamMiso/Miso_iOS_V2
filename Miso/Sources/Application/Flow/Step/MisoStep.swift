@@ -32,6 +32,8 @@ enum MisoStep: Step {
     case detailInquiryVCIsRequired(DetailInquiryResponse)
     case writeInquiryVCIsRequired
     
+    // MARK: - Setting
+    
     //MARK: Alert
     case alert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction])
     case failureAlert(title: String?, message: String?, action: [UIAlertAction] = [])

@@ -25,7 +25,7 @@ final class TabBarFlow: Flow {
     private var searchFlow = SearchFlow()
     private var marketFlow = MarketFlow()
     private var inquiryFlow = InquiryFlow()
-    private var settingFlow = SearchFlow()
+    private var settingFlow = SettingFlow()
     
     init() {}
     
