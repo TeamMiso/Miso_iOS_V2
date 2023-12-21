@@ -80,7 +80,7 @@ private extension AuthReactor {
                     KeychainLocal.shared.saveRefreshToken(self.authData.refreshToken)
                     KeychainLocal.shared.saveAccessExp(self.authData.accessExp)
                     KeychainLocal.shared.saveRefreshExp(self.authData.refreshExp)
-                    self.steps.accept(MisoStep.tabbarVCIsRequired)
+                    self.steps.accept(MisoStep.tabBarIsRequired)
                 case 400:
                     print("비밀번호가 일치하지 않습니다.")
                 case 403:
