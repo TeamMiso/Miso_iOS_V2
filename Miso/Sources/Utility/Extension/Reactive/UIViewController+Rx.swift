@@ -1,8 +1,10 @@
-//
-//  UIViewController+Rx.swift
-//  Miso
-//
-//  Created by 박준서 on 12/21/23.
-//
+import UIKit
+import RxCocoa
+import RxSwift
 
-import Foundation
+extension Reactive where Base: UIViewController {
+    var viewWillAppear: ControlEvent<Void> {
+        let source = self.methodInvoked(#selector(Base.viewWillAppear(_:))).map { _ in }
+        return ControlEvent(events: source)
+    }
+}
