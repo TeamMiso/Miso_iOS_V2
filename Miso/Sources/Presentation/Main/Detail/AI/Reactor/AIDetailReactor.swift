@@ -27,7 +27,6 @@ class AIDetailReactor: Reactor, Stepper {
 //    var uploadRecyclablesList: UploadRecyclablesListResponse?
     var originalImage: UIImage?
     
-    
     enum Action {
         case pointButtonTapped
     }
