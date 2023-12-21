@@ -72,6 +72,36 @@ extension MarketReactor {
 // MARK: - Method
 private extension MarketReactor {
     
+    func getItemList() -> Observable<Mutation> {
+        return Observable.create { observer in
+            self.itemProvider.request(.getItemList(accessToken: self.accessToken)){ response in
+                switch response {
+                case let .success(result):
+                    do {
+                        self.itemListResponse = try result.map(ItemListResponse.self)
+                    }catch(let err) {
+                        print(String(describing: err))
+                    }
+                    let statusCode = result.statusCode
+                    switch statusCode{
+                    case 200:
+                        guard let data = self.itemListResponse?.itemList else { return }
+                        observer.onNext(.fetchItemListData(data))
+                    case 401:
+                        print("토큰이 유효하지 않음")
+                    case 500:
+                        print("에러 500")
+                    default:
+                        print("에러 발생 !")
+                    }
+                case .failure(let err):
+                    print(String(describing: err))
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
     func toItemDetailVC(productId: String) -> Observable<Mutation> {
         itemProvider.request(.getItemDetailList(id: productId, accessToken: accessToken)){ response in
             switch response {
@@ -101,35 +131,5 @@ private extension MarketReactor {
             }
         }
         return .empty()
-    }
-    
-    func getItemList() -> Observable<Mutation> {
-        return Observable.create { observer in
-            self.itemProvider.request(.getItemList(accessToken: self.accessToken)){ response in
-                switch response {
-                case let .success(result):
-                    do {
-                        self.itemListResponse = try result.map(ItemListResponse.self)
-                    }catch(let err) {
-                        print(String(describing: err))
-                    }
-                    let statusCode = result.statusCode
-                    switch statusCode{
-                    case 200:
-                        guard let data = self.itemListResponse?.itemList else { return }
-                        observer.onNext(.fetchItemListData(data))
-                    case 401:
-                        print("토큰이 유효하지 않음")
-                    case 500:
-                        print("에러 500")
-                    default:
-                        print("에러 발생 !")
-                    }
-                case .failure(let err):
-                    print(String(describing: err))
-                }
-            }
-            return Disposables.create()
-        }
     }
 }
