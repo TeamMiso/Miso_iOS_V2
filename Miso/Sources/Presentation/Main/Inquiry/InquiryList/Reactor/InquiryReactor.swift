@@ -25,10 +25,12 @@ class InquiryReactor: Reactor, Stepper {
     }()
     
     var myInquiryResponse: MyInquiryResponse?
+    var detailInquiryResponse: DetailInquiryResponse?
     
     enum Action {
         case fetchInquiryList
-        case inquiryDetaillButtonTapped(inquiry: String)
+        case inquiryDetaillButtonTapped(inquiryId: String)
+        case writeInquiryButtonDidTap
     }
     
     enum Mutation {
@@ -49,8 +51,10 @@ extension InquiryReactor {
         switch action {
         case .fetchInquiryList:
             return fetchInquiryList()
-        case let .inquiryDetaillButtonTapped(inquiry):
-            return toInquiryVC(inquiryId: inquiry)
+        case let .inquiryDetaillButtonTapped(inquiryId):
+            return toDetailInquiryVC(inquiryId: inquiryId)
+        case .writeInquiryButtonDidTap:
+            return toWriteInquiryVC()
         }
         
     }
@@ -98,20 +102,20 @@ private extension InquiryReactor {
         }
     }
     
-    func toInquiryVC(inquiryId: String) -> Observable<Mutation> {
-        self.inquiryProvider.request(.){ response in
+    func toDetailInquiryVC(inquiryId: String) -> Observable<Mutation> {
+        self.inquiryProvider.request(.getMyDetailInquiryList(accessToken: self.accessToken, id: inquiryId)){ response in
             switch response {
             case let .success(result):
                 do {
-                    self.itemDetailResponse = try result.map(ItemDetailListResponse.self)
+                    self.detailInquiryResponse = try result.map(DetailInquiryResponse.self)
                 }catch(let err) {
                     print(String(describing: err))
                 }
                 let statusCode = result.statusCode
                 switch statusCode{
                 case 200:
-                    guard let data = self.itemDetailResponse else { return }
-                    self.steps.accept(MisoStep.itemDetailVCIsRequired(data))
+                    guard let data = self.detailInquiryResponse else { return }
+                    self.steps.accept(MisoStep.detailInquiryVCIsRequired(data))
                 case 401:
                     print("토큰이 유효하지 않음")
                 case 404:
@@ -128,5 +132,9 @@ private extension InquiryReactor {
         }
         return .empty()
     }
+    
+    func toWriteInquiryVC() -> Observable<Mutation> {
+        self.steps.accept(MisoStep.writeInquiryVCIsRequired)
+        return .empty()
+    }
 }
-
