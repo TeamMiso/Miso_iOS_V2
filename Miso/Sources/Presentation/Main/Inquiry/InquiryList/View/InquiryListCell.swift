@@ -8,7 +8,7 @@ final class InquiryListCell: UICollectionViewCell {
     
     static let identifier = "InquiryListCell"
     
-    var dateStatusStackview = UIStackView().then {
+    var dateAndStatusStackview = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 8
         $0.distribution = .equalSpacing
@@ -51,22 +51,22 @@ final class InquiryListCell: UICollectionViewCell {
             requestDateLabel,
             statusLabel
         ].forEach{
-            dateStatusStackview.addArrangedSubview($0)
+            dateAndStatusStackview.addArrangedSubview($0)
         }
         addSubviews(
-            dateStatusStackview,
+            dateAndStatusStackview,
             itemTitleLabel,
             itemImageView
         )
     }
     
     func setLayout() {
-        dateStatusStackview.snp.makeConstraints {
+        dateAndStatusStackview.snp.makeConstraints {
             $0.top.equalToSuperview().offset(16)
             $0.leading.equalToSuperview()
         }
         itemTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(dateStatusStackview.snp.bottom)
+            $0.top.equalTo(dateAndStatusStackview.snp.bottom)
             $0.leading.equalToSuperview()
         }
         itemImageView.snp.makeConstraints {
