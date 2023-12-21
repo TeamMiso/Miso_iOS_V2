@@ -28,6 +28,10 @@ enum MisoStep: Step {
     case itemDetailVCIsRequired(ItemDetailListResponse)
     case coordinateToMarketVCIsRequired
     
+    // MARK: - Inquiry
+    case detailInquiryVCIsRequired(DetailInquiryResponse)
+    case writeInquiryVCIsRequired
+    
     //MARK: Alert
     case alert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction])
     case failureAlert(title: String?, message: String?, action: [UIAlertAction] = [])

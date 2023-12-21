@@ -37,6 +37,12 @@ final class MarketVC: BaseVC<MarketReactor> {
         $0.backgroundColor = .white
     }
     
+    override func setup() {
+        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(rgb: 0x3484DB)
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+    }
+    
     override func addView() {
         view.addSubviews(
             misoLogoImage,
@@ -109,7 +115,6 @@ final class MarketVC: BaseVC<MarketReactor> {
                 
                 guard let currentState = self.reactor?.currentState else { return }
                 let id = "\(currentState.itemListArray[row].id)"
-                print("id: \(id)")
                 self.reactor?.action.onNext(.itemDetailTapped(productId: id))
             })
             .disposed(by: disposeBag)

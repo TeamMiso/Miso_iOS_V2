@@ -55,6 +55,10 @@ class BaseVC<T: Reactor>: UIViewController {
     func bindView(reactor: T) {}
     func bindAction(reactor: T) {}
     func bindState(reactor: T) {}
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
 }
 
 extension BaseVC: View {

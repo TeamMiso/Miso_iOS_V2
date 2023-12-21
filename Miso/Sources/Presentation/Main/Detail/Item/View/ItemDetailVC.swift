@@ -34,7 +34,7 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
     
     override func setLayout() {
         itemImageView.snp.makeConstraints {
-            $0.height.equalTo((bound.height)/3.23)
+            $0.height.equalTo((bound.height) / 2.16793893)
             $0.width.equalToSuperview()
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()

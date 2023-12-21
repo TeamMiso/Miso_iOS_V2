@@ -3,21 +3,21 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-struct MarketStepper: Stepper{
+struct InquiryStepper: Stepper{
     var steps = PublishRelay<Step>()
 
     var initialStep: Step{
-        return MisoStep.marketTabbarIsRequired
+        return MisoStep.inquiryTabbarIsRequired
     }
 }
 
-class MarketFlow: Flow {
+class InquiryFlow: Flow {
     
     var root: Presentable {
         return self.rootViewController
     }
     
-    var stepper = MarketStepper()
+    var stepper = InquiryStepper()
     
     private lazy var rootViewController = UINavigationController()
     
@@ -26,14 +26,12 @@ class MarketFlow: Flow {
     func navigate(to step: Step) -> FlowContributors {
         guard let step = step as? MisoStep else { return .none }
         switch step {
-        case .marketTabbarIsRequired:
-            return coordinateToMarketTabbar()
-        case .purchaseHistoryVCIsRequired:
-            return coordinateToPurchaseHistoryVC()
-        case let .itemDetailVCIsRequired(data):
-            return coordinateToItemDetailVC(data: data)
-        case .coordinateToMarketVCIsRequired:
-            return coordinateToMarketVC()
+        case .inquiryTabbarIsRequired:
+            return coordinateToInquiryTabbar()
+        case let .detailInquiryVCIsRequired(data):
+            return coordinateToInquiryDetailVC(data: data)
+        case .writeInquiryVCIsRequired:
+            return coordinateToWriteInquiryVC()
         case let .alert(title ,message, style, actions):
             return presentToAlert(title: title, message: message, style: style, actions: actions)
         default:
@@ -43,33 +41,26 @@ class MarketFlow: Flow {
     
 }
 
-private extension MarketFlow {
+private extension InquiryFlow {
     
-    private func coordinateToMarketTabbar() -> FlowContributors {
-        let reactor = MarketReactor()
-        let vc = MarketVC(reactor: reactor)
+    private func coordinateToInquiryTabbar() -> FlowContributors {
+        let reactor = InquiryReactor()
+        let vc = InquiryVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    private func coordinateToPurchaseHistoryVC() -> FlowContributors {
-        let reactor = PurchaseHistoryReactor()
-        let vc = PurchaseHistoryVC(reactor: reactor)
+    private func coordinateToInquiryDetailVC(data: DetailInquiryResponse) -> FlowContributors {
+        let reactor = DetailInquiryReactor(detailInquiryResponse: data)
+        let vc = DetailInquiryVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    private func coordinateToItemDetailVC(data: ItemDetailListResponse) -> FlowContributors {
-        let reactor = ItemDetailReactor(itemDetailList: data)
-        let vc = ItemDetailVC(reactor: reactor)
+    private func coordinateToWriteInquiryVC() -> FlowContributors {
+        let reactor = WriteInquiryReactor()
+        let vc = WriteInquiryVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
-        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
-    }
-    
-    private func coordinateToMarketVC() -> FlowContributors {
-        let reactor = MarketReactor()
-        let vc = MarketVC(reactor: reactor)
-        self.rootViewController.popToRootViewController(animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     

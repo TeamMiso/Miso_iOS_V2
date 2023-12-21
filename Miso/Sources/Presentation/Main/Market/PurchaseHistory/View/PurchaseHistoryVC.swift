@@ -45,8 +45,18 @@ final class PurchaseHistoryVC: BaseVC<PurchaseHistoryReactor> {
                 cellIdentifier: PurchaseHistoryCell.identifier, cellType: PurchaseHistoryCell.self)
             ) {
                 index, response, cell in
+                
+                let dateStr = response.createdDate
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'H:mm:ss.SSS" // 23.12.20
+                let convertDate = dateFormatter.date(from: dateStr) // Date 타입으로 변환
+                
+                let stringFormatter = DateFormatter()
+                stringFormatter.dateFormat = "yy.MM.dd"
+                let convertStr = stringFormatter.string(from: convertDate!)
+                
                 cell.itemImageView.kf.setImage(with: URL(string: response.imageUrl))
-                cell.purchaseDateLabel.text = response.createdDate
+                cell.purchaseDateLabel.text = convertStr
                 cell.itemNameLabel.text = response.name
             }
             .disposed(by: disposeBag)

@@ -65,7 +65,6 @@ extension PurchaseHistoryReactor {
 // MARK: - Method
 private extension PurchaseHistoryReactor {
     func fetchPurchaseHistoryList() -> Observable<Mutation> {
-        print("asdfghj")
         return self.purchaseProvider.rx.request(.puchaseHistory(accessToken: accessToken))
             .map(PurchaseHistoryResponse.self)
             .map(\.purchaseList)

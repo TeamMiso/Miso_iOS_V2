@@ -30,7 +30,7 @@ final class SearchVC: BaseVC<SearchReactor> {
     
     private let imagePicker = UIImagePickerController().then {
         $0.sourceType = .camera
-        $0.cameraFlashMode = .on
+        $0.cameraFlashMode = .auto
         $0.allowsEditing = true
     }
     
@@ -93,7 +93,7 @@ final class SearchVC: BaseVC<SearchReactor> {
     func presentCamera(){
         present(imagePicker, animated: true, completion: nil)
     }
-    
+
     override func setup() {
         imagePicker.delegate = self
         searchTextField.delegate = self
@@ -102,8 +102,11 @@ final class SearchVC: BaseVC<SearchReactor> {
 
         
         toDetailButton.isHidden = true
-        
         recentSearchArray = dbHelper.readData()
+        
+        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(rgb: 0x3484DB)
+        self.navigationItem.backBarButtonItem = backBarButtonItem
     
     }
     

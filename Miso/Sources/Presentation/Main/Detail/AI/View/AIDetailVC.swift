@@ -28,8 +28,8 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
     private let subTitleRecycleTypeStackview = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 4
-        $0.distribution = .equalSpacing
-        $0.alignment = .fill
+        $0.distribution = .fillEqually
+        $0.alignment = .leading
     }
     private let subTitleLabel = UILabel().then {
         $0.textColor = UIColor(rgb: 0x3484DB)
@@ -53,7 +53,7 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
     private let recycleStackview = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 16
-        $0.distribution = .fill
+        $0.distribution = .equalSpacing
         $0.alignment = .leading
     }
     
@@ -143,13 +143,13 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
         }
         recycleImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.height.equalTo(393)
+            $0.height.equalTo((bound.height) / 2.16793893)
             $0.width.equalToSuperview()
         }
         recycleTypeStackview.snp.makeConstraints {
             $0.height.equalTo(24)
-            $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview().inset(240)
+            $0.leading.equalToSuperview()
         }
         recycleTypeImageView.snp.makeConstraints {
             $0.height.width.equalTo(24)

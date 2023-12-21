@@ -6,13 +6,13 @@ import RxFlow
 import RxSwift
 import UIKit
 
-class SearchDetailReactor: Reactor, Stepper {
+class DetailInquiryReactor: Reactor, Stepper {
     
     var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
     var initialState: State
     
-    var detailRecyclablesList: DetailRecyclablesListResponse?
+    var detailInquiryResponse: DetailInquiryResponse?
 
     enum Action {
         
@@ -23,20 +23,21 @@ class SearchDetailReactor: Reactor, Stepper {
     }
     
     struct State {
-        var detailRecyclablesList: DetailRecyclablesListResponse?
+        var detailInquiryResponse: DetailInquiryResponse?
         
-        init(detailRecyclablesList: DetailRecyclablesListResponse?) {
-            self.detailRecyclablesList = detailRecyclablesList
+        init(detailInquiryResponse: DetailInquiryResponse?) {
+
+            self.detailInquiryResponse = detailInquiryResponse
         }
+        
     }
     
-    
-    init(detailRecyclablesList: DetailRecyclablesListResponse? = nil) {
-        self.initialState = State(detailRecyclablesList: detailRecyclablesList)
+    init(detailInquiryResponse: DetailInquiryResponse? = nil) {
+        self.initialState = State(detailInquiryResponse: detailInquiryResponse)
     }
 }
 
-extension SearchDetailReactor {
+extension DetailInquiryReactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
