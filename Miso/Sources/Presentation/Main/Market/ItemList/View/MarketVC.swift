@@ -95,7 +95,7 @@ final class MarketVC: BaseVC<MarketReactor> {
                 index, response, cell in
                 cell.itemImage.kf.setImage(with: URL(string: response.imageUrl))
                 cell.itemNameLabel.text = response.name
-                cell.itemPointLabel.text = "\(response.price)"
+                cell.itemPointLabel.text = "\(response.price) Point"
                 
             }
             .disposed(by: disposeBag)
