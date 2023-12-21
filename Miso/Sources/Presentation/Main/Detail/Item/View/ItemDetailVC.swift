@@ -24,11 +24,19 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
+    private let currentPointButton = UIButton().then {
+        $0.setTitle("1500 포인트", for: .normal)
+        $0.titleLabel?.font = .miso(size: 12, family: .semiBold)
+        $0.setTitleColor(UIColor(rgb: 0xBFBFBF), for: .normal)
+        $0.backgroundColor = UIColor(rgb: 0xFFFFFF)
+    }
+    
     override func addView() {
         view.addSubviews(
             itemImageView,
             contentLabel,
-            buyButton
+            buyButton,
+            currentPointButton
         )
     }
     
@@ -46,6 +54,11 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
         buyButton.snp.makeConstraints {
             $0.height.equalTo((bound.height)/17.75)
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(32)
+            $0.leading.trailing.equalToSuperview().inset(16)
+        }
+        currentPointButton.snp.makeConstraints {
+            $0.height.equalTo(20)
+            $0.top.equalTo(buyButton.snp.bottom).offset(4)
             $0.leading.trailing.equalToSuperview().inset(16)
         }
     }
