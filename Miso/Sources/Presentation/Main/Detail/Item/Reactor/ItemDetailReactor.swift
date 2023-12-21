@@ -73,7 +73,15 @@ private extension ItemDetailReactor {
                 let statusCode = result.statusCode
                 switch statusCode{
                 case 201:
-                    self.steps.accept(MisoStep.coordinateToMarketVCIsRequired)
+                    self.steps.accept(MisoStep.alert(
+                        title: "상품 구매하기",
+                        message: "상품을 구매하실건가요?",
+                        style: .alert,
+                        actions: [
+                            UIAlertAction(title: "취소", style: .cancel),
+                            UIAlertAction(title: "구매", style: .default)
+                        ])
+                    )
                 case 401:
                     print("토큰이 유효하지 않습니다.")
                 case 403:
