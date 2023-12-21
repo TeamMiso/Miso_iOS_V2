@@ -17,7 +17,7 @@ final class InquiryVC: BaseVC<InquiryReactor> {
         $0.font = .miso(size: 32, family: .semiBold)
     }
     
-    private let requestButton = UIButton().then {
+    private let writeInquiryButton = UIButton().then {
         $0.setImage(UIImage(systemName: "plus"), for: .normal)
         $0.semanticContentAttribute = .forceLeftToRight
         $0.setTitle("  문의하기", for: .normal)
@@ -37,11 +37,17 @@ final class InquiryVC: BaseVC<InquiryReactor> {
         $0.backgroundColor = .white
     }
     
+    override func setup() {
+        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(rgb: 0x3484DB)
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+    }
+    
     override func addView() {
         view.addSubviews(
             misoLogoImage,
             misoLabel,
-            requestButton,
+            writeInquiryButton,
             inquiryListCollectionView
         )
     }
@@ -56,7 +62,7 @@ final class InquiryVC: BaseVC<InquiryReactor> {
             $0.top.equalTo(misoLogoImage.snp.top).offset(4)
             $0.leading.equalTo(misoLogoImage.snp.trailing)
         }
-        requestButton.snp.makeConstraints {
+        writeInquiryButton.snp.makeConstraints {
             $0.height.equalTo(48)
             $0.top.equalTo(misoLogoImage.snp.top).offset(4)
             $0.trailing.equalToSuperview().inset(16)
@@ -69,7 +75,23 @@ final class InquiryVC: BaseVC<InquiryReactor> {
     }
     
     override func bindView(reactor: InquiryReactor) {
-       
+        
+        writeInquiryButton.rx.tap
+            .map { _ in Reactor.Action.writeInquiryButtonDidTap }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        inquiryListCollectionView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let self = self else { return }
+                
+                let row = indexPath.row
+                
+                guard let currentState = self.reactor?.currentState else { return }
+                let id = "\(currentState.myInquiryResponse[row].id)"
+                self.reactor?.action.onNext(.inquiryDetaillButtonTapped(inquiryId: id))
+            })
+            .disposed(by: disposeBag)
     }
     
     override func bindAction(reactor: InquiryReactor) {
