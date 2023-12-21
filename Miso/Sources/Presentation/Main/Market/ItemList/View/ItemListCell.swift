@@ -8,10 +8,7 @@ final class ItemListCell: UICollectionViewCell {
     
     static let identifier = "ItemListCell"
     
-    var itemImage = UIImageView().then {
-        $0.layer.cornerRadius = 8
-        $0.layer.masksToBounds = true
-    }
+    var itemImage = UIImageView()
     
     var itemNameLabel = UILabel().then {
         $0.textColor = UIColor(rgb: 0x000000)
