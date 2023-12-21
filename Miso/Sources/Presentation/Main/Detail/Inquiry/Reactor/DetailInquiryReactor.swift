@@ -6,7 +6,7 @@ import RxFlow
 import RxSwift
 import UIKit
 
-class InquiryDetailReactor: Reactor, Stepper {
+class DetailInquiryReactor: Reactor, Stepper {
     
     var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
@@ -26,17 +26,18 @@ class InquiryDetailReactor: Reactor, Stepper {
         var detailInquiryResponse: DetailInquiryResponse?
         
         init(detailInquiryResponse: DetailInquiryResponse?) {
+
             self.detailInquiryResponse = detailInquiryResponse
         }
+        
     }
     
-    
-    init(detailRecyclablesList: DetailRecyclablesListResponse? = nil) {
+    init(detailInquiryResponse: DetailInquiryResponse? = nil) {
         self.initialState = State(detailInquiryResponse: detailInquiryResponse)
     }
 }
 
-extension InquiryDetailReactor {
+extension DetailInquiryReactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
