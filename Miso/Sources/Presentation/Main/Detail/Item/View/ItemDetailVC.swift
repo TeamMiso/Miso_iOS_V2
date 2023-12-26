@@ -82,7 +82,7 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.navigationItem.title = itemTitle
+        self.navigationItem.title = self.itemTitle
         itemImageView.kf.setImage(with: URL(string: imageURL))
         contentLabel.text = content
         buyButton.setTitle(buyText, for: .normal)
