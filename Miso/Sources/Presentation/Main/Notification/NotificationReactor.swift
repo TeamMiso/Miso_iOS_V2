@@ -45,7 +45,7 @@ extension NotificationReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case let .sendDeviceToken(deviceToken):
-            return writeInquiryComplished(deviceToken: deviceToken)
+            return sendDeviceToken(deviceToken: deviceToken)
         }
         
     }
@@ -60,8 +60,8 @@ extension NotificationReactor {
 
 // MARK: - Method
 private extension NotificationReactor {
-    func writeInquiryComplished(deviceToken: String) -> Observable<Mutation> {
-        self.notificationProvider.request(.saveDeviceToken(accessToken: self.accessToken, deviceToken: deviceToken)){ response in
+    func sendDeviceToken(deviceToken: String) -> Observable<Mutation> {
+        self.notificationProvider.request(.sendDeviceToken(accessToken: self.accessToken, deviceToken: deviceToken)){ response in
             switch response {
             case let .success(result):
                 let statusCode = result.statusCode
@@ -83,4 +83,3 @@ private extension NotificationReactor {
         return .empty()
     }
 }
-
