@@ -35,7 +35,6 @@ final class AppFlow: Flow {
     
     init(window: UIWindow) {
         self.window = window
-        Keychain().delete(type: .refreshToken)
     }
         
     deinit{
