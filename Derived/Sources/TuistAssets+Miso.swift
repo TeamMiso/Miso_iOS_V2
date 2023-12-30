@@ -24,6 +24,7 @@ public enum MisoAsset {
   public static let camera = MisoImages(name: "Camera")
   public static let misoLogoGreen = MisoImages(name: "MisoLogo-Green")
   public static let misoLogoWhite = MisoImages(name: "MisoLogo-White")
+  public static let uploadImage = MisoImages(name: "uploadImage")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
