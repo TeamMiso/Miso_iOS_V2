@@ -47,6 +47,10 @@ let project = Project(
         .package(
             url: "https://github.com/RxSwiftCommunity/RxDataSources.git",
             .upToNextMajor(from: "5.0.0")
+        ),
+        .package(
+            url: "https://github.com/firebase/firebase-ios-sdk.git",
+            .exact("10.4.0")
         )
     ],
     settings: nil,
@@ -73,7 +77,8 @@ let project = Project(
                 .package(product: "AEOTPTextField"),
                 .package(product: "ReactorKit"),
                 .package(product: "Kingfisher"),
-                .package(product: "RxDataSources")
+                .package(product: "RxDataSources"),
+                .package(product: "FirebaseMessaging")
             ]
         ),
     ],
