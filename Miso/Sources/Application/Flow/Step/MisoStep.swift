@@ -7,7 +7,6 @@ enum MisoStep: Step {
     case loginVCIsRequired
     case signupVCIsRequired
     case certificationVCIsRequied
-    case tabbarVCIsRequired
     case findPasswordVCIsRequired
     
     // MARK: TabBar
