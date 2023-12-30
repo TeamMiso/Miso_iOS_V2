@@ -2,7 +2,7 @@ import Foundation
 import Moya
 
 enum NotificationAPI {
-    case saveDeviceToken(accessToken: String, deviceToken: String)
+    case sendDeviceToken(accessToken: String, deviceToken: String)
     case getItemDetailList(accessToken: String, id: String)
 }
 extension NotificationAPI: TargetType {
@@ -13,7 +13,7 @@ extension NotificationAPI: TargetType {
     
     var path: String {
         switch self {
-        case let .saveDeviceToken( _, deviceToken):
+        case let .sendDeviceToken( _, deviceToken):
             return "/save/\(deviceToken)"
         case let .getItemDetailList( _, id):
             return "/\(id)"
@@ -22,7 +22,7 @@ extension NotificationAPI: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .saveDeviceToken:
+        case .sendDeviceToken:
             return .post
         case .getItemDetailList:
             return .get
@@ -42,7 +42,7 @@ extension NotificationAPI: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case let .saveDeviceToken(accessToken, _):
+        case let .sendDeviceToken(accessToken, _):
             return ["Authorization": accessToken]
         case let .getItemDetailList(accessToken, _):
             return ["Authorization": accessToken]
