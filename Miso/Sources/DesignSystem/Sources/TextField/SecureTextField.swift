@@ -21,6 +21,8 @@ public final class SecureTextField: UITextField {
         backgroundColor = UIColor(rgb: 0xFFFFFF)
         font = .miso(size: 14, family: .regular)
         setPlaceholderColor(UIColor(rgb: 0xBFBFBF))
+        leftView = UIView(frame: CGRect(x: 0, y: 0, width: 24, height: 48))
+        leftViewMode = .always
         
         isSecureTextEntry = true
         setPasswordToggleButtonImage()

@@ -22,7 +22,7 @@ final class LoginVC: BaseVC<AuthReactor> {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 12, family: .regular)
     }
-    private let emailTextField = NormalTextField(placeholder: "  이메일").then {
+    private let emailTextField = NormalTextField(placeholder: "이메일").then {
         $0.font = .miso(size: 15, family: .regular)
     }
     private let passwordLabel = UILabel().then {
@@ -30,7 +30,7 @@ final class LoginVC: BaseVC<AuthReactor> {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 12, family: .regular)
     }
-    private let passwordTextField = SecureTextField(placeholder: "  비밀번호").then {
+    private let passwordTextField = SecureTextField(placeholder: "비밀번호").then {
         $0.font = .miso(size: 15, family: .regular)
     }
     private let forgotPasswordLabel = UILabel().then {

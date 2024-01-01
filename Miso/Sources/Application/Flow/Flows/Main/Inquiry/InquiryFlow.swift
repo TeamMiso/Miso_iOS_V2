@@ -6,7 +6,7 @@ import RxCocoa
 struct InquiryStepper: Stepper{
     var steps = PublishRelay<Step>()
 
-    var initialStep: Step{
+    var initialStep: Step {
         return MisoStep.inquiryTabbarIsRequired
     }
 }

@@ -115,7 +115,10 @@ final class SettingVC: BaseVC<SettingReactor> {
     }
     
     override func bindView(reactor: SettingReactor) {
-        
+        logoutButton.rx.tap
+            .map {  SettingReactor.Action.logoutButtonDidTap }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     override func bindAction(reactor: SettingReactor) {

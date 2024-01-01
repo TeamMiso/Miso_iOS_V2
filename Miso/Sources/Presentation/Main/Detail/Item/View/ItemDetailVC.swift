@@ -29,12 +29,18 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
         $0.textColor = UIColor(rgb: 0xBFBFBF)
     }
     
+    private let currentPointImageView = UIImageView().then {
+        $0.image = UIImage(systemName: "p.circle")
+        $0.tintColor = UIColor(rgb: 0xBFBFBF)
+    }
+    
     override func addView() {
         view.addSubviews(
             itemImageView,
             contentLabel,
             buyButton,
-            currentPointLabel
+            currentPointLabel,
+            currentPointImageView
         )
     }
     
@@ -59,6 +65,11 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
             $0.centerX.equalToSuperview()
 //            $0.leading.trailing.equalToSuperview().inset(16)
         }
+        currentPointImageView.snp.makeConstraints {
+            $0.height.width.equalTo(16)
+            $0.top.equalTo(buyButton.snp.bottom).offset(6)
+            $0.trailing.equalTo(currentPointLabel.snp.leading)
+        }
     }
     
     override func bindView(reactor: ItemDetailReactor) {
@@ -73,7 +84,7 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
         
         buyButton.rx.tap
             .map { ItemDetailReactor.Action.buyButtonTapped(
-                id: self.id
+                itemTitle: self.itemTitle, point: self.point, id: self.id
             ) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -91,7 +102,7 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
             .map { $0.pointResponse }
             .subscribe(onNext: { pointResponse in
                 self.currentPoint = pointResponse?.point ?? 0
-                self.currentPointLabel.text = String(self.currentPoint) + " 포인트"
+                self.currentPointLabel.text =  String(self.currentPoint) + " 포인트"
             })
             .disposed(by: disposeBag)
     }

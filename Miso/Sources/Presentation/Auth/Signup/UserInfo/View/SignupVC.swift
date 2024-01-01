@@ -11,7 +11,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 12, family: .regular)
     }
-    private let emailTextField = NormalTextField(placeholder: ".  이메일").then {
+    private let emailTextField = NormalTextField(placeholder: "이메일").then {
         $0.font = .miso(size: 15, family: .regular)
     }
     private let passwordLabel = UILabel().then {
@@ -19,7 +19,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 12, family: .regular)
     }
-    private let passwordTextField = SecureTextField(placeholder: ".  비밀번호").then {
+    private let passwordTextField = SecureTextField(placeholder: "비밀번호").then {
         $0.font = .miso(size: 15, family: .regular)
     }
     private let confirmPasswordLabel = UILabel().then {
@@ -27,7 +27,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         $0.textColor = UIColor(rgb: 0x595959)
         $0.font = .miso(size: 12, family: .regular)
     }
-    private let checkPasswordTextField = SecureTextField(placeholder: ".  비밀번호 확인").then {
+    private let checkPasswordTextField = SecureTextField(placeholder: "비밀번호 확인").then {
         $0.font = .miso(size: 15, family: .regular)
     }
     private lazy var signupButton = NextStepButton().then {
