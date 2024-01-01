@@ -3,7 +3,7 @@ import Moya
 
 enum NotificationAPI {
     case sendDeviceToken(accessToken: String, deviceToken: String)
-    case getItemDetailList(accessToken: String, id: String)
+    case getMyInquiryAnswer(accessToken: String, id: Int)
 }
 extension NotificationAPI: TargetType {
     
@@ -15,7 +15,7 @@ extension NotificationAPI: TargetType {
         switch self {
         case let .sendDeviceToken( _, deviceToken):
             return "/save/\(deviceToken)"
-        case let .getItemDetailList( _, id):
+        case let .getMyInquiryAnswer( _, id):
             return "/\(id)"
         }
     }
@@ -24,7 +24,7 @@ extension NotificationAPI: TargetType {
         switch self {
         case .sendDeviceToken:
             return .post
-        case .getItemDetailList:
+        case .getMyInquiryAnswer:
             return .get
         }
     }
@@ -44,7 +44,7 @@ extension NotificationAPI: TargetType {
         switch self {
         case let .sendDeviceToken(accessToken, _):
             return ["Authorization": accessToken]
-        case let .getItemDetailList(accessToken, _):
+        case let .getMyInquiryAnswer(accessToken, _):
             return ["Authorization": accessToken]
         default:
             return ["Content-Type": "application/json"]
