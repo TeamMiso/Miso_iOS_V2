@@ -49,8 +49,8 @@ extension SettingReactor {
         case .fetchUserInfoResponse:
             return fetchInquiryList()
         }
-        
     }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
