@@ -36,5 +36,8 @@ enum MisoStep: Step {
     //MARK: Alert
     case alert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction])
     case failureAlert(title: String?, message: String?, action: [UIAlertAction] = [])
+    
+    // MARK: - CooridinateToRootVC
+    case popToRootVCIsRequired
 }
 
