@@ -1,6 +1,6 @@
 import Foundation
 
-struct MyInquiryResponse: Decodable {
+struct MyInquiryListResponse: Decodable {
     
     let inquiryList: [MyInquiryList]
     
