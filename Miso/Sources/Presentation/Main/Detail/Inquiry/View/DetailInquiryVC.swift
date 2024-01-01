@@ -9,6 +9,7 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
     var inquiryContent: String = ""
     var inquiryImageUrl: String = ""
     var inquiryStatus: String = ""
+    var inquiryAnswer: String = ""
     
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .white
@@ -34,7 +35,7 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
     
     private let inquiryContentTitleLabel = UILabel().then {
         $0.text = "문의 내용"
-        $0.textColor = UIColor(rgb: 0x595959)
+        $0.textColor = UIColor(rgb: 0x000000)
         $0.font = .miso(size: 20, family: .semiBold)
         $0.numberOfLines = 0
     }
@@ -44,6 +45,24 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
         $0.font = .miso(size: 15, family: .regular)
         $0.numberOfLines = 0
     }
+    
+    private let bewtweenInquiryView = UIView().then {
+        $0.backgroundColor = UIColor(rgb: 0x000000)
+    }
+    
+    private let inquiryAnswerTitleLabel = UILabel().then {
+        $0.text = "문의에 대한 답변"
+        $0.textColor = UIColor(rgb: 0x000000)
+        $0.font = .miso(size: 20, family: .semiBold)
+        $0.numberOfLines = 0
+    }
+    
+    private let inquiryAnswerContentLabel = UILabel().then {
+        $0.textColor = UIColor(rgb: 0x595959)
+        $0.font = .miso(size: 15, family: .regular)
+        $0.numberOfLines = 0
+    }
+    
     
     override func setup() {
         self.navigationController?.navigationBar.prefersLargeTitles = true
@@ -60,7 +79,10 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
             dateAndStatusStackview,
             inquiryImageView,
             inquiryContentTitleLabel,
-            inquiryContentLabel
+            inquiryContentLabel,
+            bewtweenInquiryView,
+            inquiryAnswerTitleLabel,
+            inquiryAnswerContentLabel
         )
         view.addSubview(
             scrollView
@@ -69,8 +91,7 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
     
     override func setLayout() {
         scrollView.snp.makeConstraints {
-            $0.top.bottom.equalTo(self.view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.top.bottom.leading.trailing.equalToSuperview()
         }
         dateAndStatusStackview.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -80,7 +101,6 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
             $0.height.equalTo((bound.height) / 2.16793893)
             $0.width.equalToSuperview()
             $0.top.equalTo(dateAndStatusStackview.snp.bottom).offset(4)
-            
         }
         inquiryContentTitleLabel.snp.makeConstraints {
             $0.top.equalTo(inquiryImageView.snp.bottom).offset(16)
@@ -90,14 +110,31 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
             $0.top.equalTo(inquiryContentTitleLabel.snp.bottom).offset(16)
             $0.leading.equalToSuperview().offset(16)
         }
+        bewtweenInquiryView.snp.makeConstraints {
+            $0.height.equalTo(1)
+            $0.top.equalTo(inquiryContentLabel.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(16)
+        }
+        inquiryAnswerTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(bewtweenInquiryView.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(16)
+        }
+        inquiryAnswerContentLabel.snp.makeConstraints {
+            $0.top.equalTo(inquiryAnswerTitleLabel.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.bottom.equalToSuperview()
+        }
+    }
+    
+    override func bindAction(reactor: DetailInquiryReactor) {
         
     }
     
     override func bindState(reactor: DetailInquiryReactor) {
         reactor.state
             .map { $0.detailInquiryResponse }
-            .subscribe(onNext: { response in
-                guard let response = response else { return }
+            .subscribe(onNext: { datailInquiryResponse in
+                guard let response = datailInquiryResponse else { return }
                 
                 self.inquiryId = response.id
                 self.inquiryDate = response.inquiryDate
@@ -128,6 +165,27 @@ final class DetailInquiryVC: BaseVC<DetailInquiryReactor> {
                 self.inquiryImageView.kf.setImage(with: URL(string: self.inquiryImageUrl))
                 self.inquiryContentLabel.text = self.inquiryContent
 
+            })
+            .disposed(by: disposeBag)
+        
+        
+        reactor.action.onNext(.fetchInquiryResponse(id: self.inquiryId))
+        
+        reactor.state
+            .map{ $0.myInquiryResponse }
+            .subscribe(onNext: { myInquiryResponse in
+                if let response = myInquiryResponse {
+                    
+                    self.inquiryAnswerTitleLabel.isHidden = false
+                    self.inquiryAnswerContentLabel.isHidden = false
+                    
+                    self.inquiryAnswer = response.answer
+                    self.inquiryAnswerContentLabel.text = self.inquiryAnswer
+                } else {
+                    
+                    self.inquiryAnswerTitleLabel.isHidden = true
+                    self.inquiryAnswerContentLabel.isHidden = true
+                }
             })
             .disposed(by: disposeBag)
     }
