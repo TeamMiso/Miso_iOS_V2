@@ -24,7 +24,7 @@ class InquiryReactor: Reactor, Stepper {
         }
     }()
     
-    var myInquiryResponse: MyInquiryResponse?
+    var myInquiryResponse: MyInquiryStatusResponse?
     var detailInquiryResponse: DetailInquiryResponse?
     
     enum Action {
@@ -34,11 +34,11 @@ class InquiryReactor: Reactor, Stepper {
     }
     
     enum Mutation {
-        case fetchInquiryListData([MyInquiryResponse.MyInquiryList])
+        case fetchInquiryListData([MyInquiryStatusResponse.MyInquiryStatusList])
     }
     
     struct State {
-        var myInquiryResponse: [MyInquiryResponse.MyInquiryList] = []
+        var myInquiryResponse: [MyInquiryStatusResponse.MyInquiryStatusList] = []
     }
     
     init() {
@@ -78,7 +78,7 @@ private extension InquiryReactor {
                 switch response {
                 case let .success(result):
                     do {
-                        self.myInquiryResponse = try result.map(MyInquiryResponse.self)
+                        self.myInquiryResponse = try result.map(MyInquiryStatusResponse.self)
                     }catch(let err) {
                         print(String(describing: err))
                     }
