@@ -3,7 +3,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-struct MarketStepper: Stepper{
+struct MarketStepper: Stepper {
     var steps = PublishRelay<Step>()
 
     var initialStep: Step{
@@ -36,6 +36,10 @@ class MarketFlow: Flow {
             return coordinateToMarketVC()
         case let .alert(title ,message, style, actions):
             return presentToAlert(title: title, message: message, style: style, actions: actions)
+        case .searchTabbarIsRequired:
+            return coordinateToSearchTabbar()
+        case .popToRootVCIsRequired:
+            return popToMarketVC()
         default:
             return .none
         }
@@ -55,6 +59,7 @@ private extension MarketFlow {
     private func coordinateToPurchaseHistoryVC() -> FlowContributors {
         let reactor = PurchaseHistoryReactor()
         let vc = PurchaseHistoryVC(reactor: reactor)
+        self.rootViewController.popToRootViewController(animated: true)
         self.rootViewController.pushViewController(vc, animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
@@ -78,5 +83,19 @@ private extension MarketFlow {
         actions.forEach { alert.addAction($0) }
         self.rootViewController.topViewController?.present(alert, animated: true)
         return .none
+    }
+    
+    private func coordinateToSearchTabbar() -> FlowContributors {
+        let reactor = SearchReactor()
+        let vc = SearchVC(reactor: reactor)
+        self.rootViewController.popToRootViewController(animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
+    }
+    
+    private func popToMarketVC() -> FlowContributors {
+        let reactor = MarketReactor()
+        let vc = MarketVC(reactor: reactor)
+        self.rootViewController.popToRootViewController(animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
 }
