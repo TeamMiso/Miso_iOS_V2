@@ -29,7 +29,7 @@ class ItemDetailReactor: Reactor, Stepper {
     
     enum Action {
         case fetchUserPoint
-        case buyButtonTapped(id: Int)
+        case buyButtonTapped(itemTitle: String, point: Int, id: Int)
     }
     
     enum Mutation {
@@ -57,8 +57,8 @@ extension ItemDetailReactor {
         switch action {
         case .fetchUserPoint:
             return fetchUserPoint()
-        case let .buyButtonTapped(id):
-            return buyButtonTapped(id: id)
+        case let .buyButtonTapped(itemTitle, point, id):
+            return buyButtonTapped(itemTitle: itemTitle, point: point, id: id)
         }
     }
     
@@ -105,54 +105,72 @@ private extension ItemDetailReactor {
         }
     }
     
-    private func buyButtonTapped(id: Int) -> Observable<Mutation>  {
-        purchaseProvider.request(.buyItem(id: id, accessToken: accessToken)) { response in
-            switch response {
-            case .success(let result):
-                let statusCode = result.statusCode
-                switch statusCode{
-                case 201:
-                    self.steps.accept(MisoStep.alert(
-                        title: "상품 구매하기",
-                        message: "상품을 구매하실건가요?",
-                        style: .alert,
-                        actions: [
-                            UIAlertAction(title: "취소", style: .cancel),
-                            UIAlertAction(title: "구매", style: .default)
-                        ])
-                    )
-                case 401:
-                    print("토큰이 유효하지 않습니다.")
-                case 403:
-                    self.steps.accept(MisoStep.alert(
-                        title: "상품 구매 불가",
-                        message: "보유하신 포인트가 부족해요.\n포인트를 획득하러 가시겠어요?",
-                        style: .alert,
-                        actions: [
-                            UIAlertAction(title: "취소", style: .cancel),
-                            UIAlertAction(title: "구매", style: .default)
-                        ])
-                    )
-                case 404:
-                    print("물품을 찾을 수 없습니다.")
-                case 410:
-                    self.steps.accept(MisoStep.alert(
-                        title: "상품 구매 불가",
-                        message: "아이템의 재고가 남아있지 않습니다.",
-                        style: .alert,
-                        actions: [
-                            UIAlertAction(title: "확인", style: .default)
-                        ])
-                    )
-                case 500:
-                    print("서버 오류")
-                default:
-                    print(statusCode)
+    private func buyButtonTapped(itemTitle: String, point: Int, id: Int) -> Observable<Mutation>  {
+        self.steps.accept(MisoStep.alert(
+            title: "상품 구매하기",
+            message: "\(itemTitle)을/를 구매하실건가요?\n\(point) Point가 소비돼요.",
+            style: .alert,
+            actions: [
+                UIAlertAction(title: "취소", style: .cancel),
+                UIAlertAction(title: "구매", style: .default) { (_) in
+                    self.purchaseProvider.request(.buyItem(id: id, accessToken: self.accessToken)) { response in
+                        switch response {
+                        case .success(let result):
+                            let statusCode = result.statusCode
+                            switch statusCode{
+                            case 201:
+                                self.steps.accept(MisoStep.alert(
+                                    title: "상품 구매 완료",
+                                    message: "구매가 완료되었습니다.",
+                                    style: .alert,
+                                    actions: [
+                                        UIAlertAction(title: "상점으로", style: .default) { (_) in
+                                            self.steps.accept(MisoStep.popToRootVCIsRequired)
+                                        },
+                                        UIAlertAction(title: "내역보기", style: .default) { (_) in
+                                            self.steps.accept(MisoStep.purchaseHistoryVCIsRequired)
+                                        }
+                                    ])
+                                )
+                            case 401:
+                                print("토큰이 유효하지 않습니다.")
+                            case 403:
+                                self.steps.accept(MisoStep.alert(
+                                    title: "상품 구매 불가",
+                                    message: "보유하신 포인트가 부족해요.",
+                                    style: .alert,
+                                    actions: [
+                                        UIAlertAction(title: "상점으로", style: .default) { (_) in
+                                            self.steps.accept(MisoStep.popToRootVCIsRequired)
+                                        },
+                                        UIAlertAction(title: "카메라로", style: .default) { (_) in
+                                            self.steps.accept(MisoStep.cameraIsRequired)
+                                        }
+                                    ])
+                                )
+                            case 404:
+                                print("물품을 찾을 수 없습니다.")
+                            case 410:
+                                self.steps.accept(MisoStep.alert(
+                                    title: "상품 구매 불가",
+                                    message: "아이템의 재고가 남아있지 않습니다.",
+                                    style: .alert,
+                                    actions: [
+                                        UIAlertAction(title: "확인", style: .default)
+                                    ])
+                                )
+                            case 500:
+                                print("서버 오류")
+                            default:
+                                print(statusCode)
+                            }
+                        case .failure(let err):
+                            print(String(describing: err))
+                        }
+                    }
                 }
-            case .failure(let err):
-                print(String(describing: err))
-            }
-        }
+            ])
+        )
         return .empty()
     }
 }
