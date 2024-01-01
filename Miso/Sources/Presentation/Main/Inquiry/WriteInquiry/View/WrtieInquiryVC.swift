@@ -56,7 +56,6 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         $0.textColor = UIColor(rgb: 0x000000)
     }
     
-    
     override func setup() {
         navigationItem.title = "문의하기"
         let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
@@ -123,7 +122,6 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
-    
 }
 
 extension WriteInquiryVC: PHPickerViewControllerDelegate {
