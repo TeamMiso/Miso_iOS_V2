@@ -133,8 +133,7 @@ final class SearchDetailVC: BaseVC<SearchDetailReactor> {
     
     override func setLayout() {
         scrollView.snp.makeConstraints {
-            $0.top.bottom.equalTo(self.view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.top.bottom.leading.trailing.equalToSuperview()
         }
         recycleImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
