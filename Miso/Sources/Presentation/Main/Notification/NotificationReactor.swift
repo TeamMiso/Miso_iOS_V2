@@ -77,7 +77,6 @@ private extension NotificationReactor {
                 }
             case .failure(let err):
                 print(String(describing: err))
-                
             }
         }
         return .empty()
