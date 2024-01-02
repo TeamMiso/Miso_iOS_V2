@@ -67,5 +67,6 @@ extension AppDelegate: MessagingDelegate {
         
         let reactor = NotificationReactor()
         reactor.action.onNext(.sendDeviceToken(deviceToken: deviceToken))
+        print("deviceToken: \(deviceToken)")
     }
 }
