@@ -14,7 +14,7 @@ final class SearchVC: BaseVC<SearchReactor> {
     }
     
     private let misoLabel = UILabel().then {
-        $0.text = "MISO"
+        $0.text = "Miso"
         $0.textColor = UIColor(rgb: 0x25D07D)
         $0.font = .miso(size: 32, family: .semiBold)
     }
