@@ -94,7 +94,7 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
     }
     
     private let pointButton = NextStepButton().then {
-        $0.setTitle("10 포인트 받기", for: .normal)
+        $0.setTitle("100 포인트 받기", for: .normal)
     }
      
     override func setup() {
@@ -148,7 +148,7 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
         }
         recycleTypeStackview.snp.makeConstraints {
             $0.height.equalTo(24)
-            $0.trailing.equalToSuperview().inset(240)
+            $0.trailing.equalToSuperview().inset(230)
             $0.leading.equalToSuperview()
         }
         recycleTypeImageView.snp.makeConstraints {
@@ -209,6 +209,8 @@ final class AIDetailVC: BaseVC<AIDetailReactor> {
             recycleTypeLabel.text = "분류 : 일반쓰레기"
         case "GLASS":
             recycleTypeLabel.text = "분류 : 유리"
+        case "BATTERY":
+            recycleTypeLabel.text = "분류 : 건전지"
         default:
             recycleTypeLabel.text = "분류 : "
         }
