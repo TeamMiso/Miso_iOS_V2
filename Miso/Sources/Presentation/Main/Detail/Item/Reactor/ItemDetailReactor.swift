@@ -121,10 +121,10 @@ private extension ItemDetailReactor {
                             case 201:
                                 self.steps.accept(MisoStep.alert(
                                     title: "상품 구매 완료",
-                                    message: "구매가 완료되었습니다.",
+                                    message: "구매가 완료되었습니다.\n구매 내역으로 이동할까요?",
                                     style: .alert,
                                     actions: [
-                                        UIAlertAction(title: "상점으로", style: .default) { (_) in
+                                        UIAlertAction(title: "홈으로", style: .default) { (_) in
                                             self.steps.accept(MisoStep.popToRootVCIsRequired)
                                         },
                                         UIAlertAction(title: "내역보기", style: .default) { (_) in
@@ -137,10 +137,10 @@ private extension ItemDetailReactor {
                             case 403:
                                 self.steps.accept(MisoStep.alert(
                                     title: "상품 구매 불가",
-                                    message: "보유하신 포인트가 부족해요.",
+                                    message: "보유하신 포인트가 부족해요.\n포인트를 획득하러 가시겠어요?",
                                     style: .alert,
                                     actions: [
-                                        UIAlertAction(title: "상점으로", style: .default) { (_) in
+                                        UIAlertAction(title: "홈으로", style: .default) { (_) in
                                             self.steps.accept(MisoStep.popToRootVCIsRequired)
                                         },
                                         UIAlertAction(title: "카메라로", style: .default) { (_) in
