@@ -72,8 +72,12 @@ private extension WriteInquiryReactor {
                         message: "문의사항이 게시되었어요. \n게시글을 보러 가시겠어요?",
                         style: .alert,
                         actions: [
-                            UIAlertAction(title: "홈으로", style: .default),
-                            UIAlertAction(title: "게시글로", style: .default)
+                            UIAlertAction(title: "홈으로", style: .default){ (_) in
+                                self.steps.accept(MisoStep.searchTabbarIsRequired)
+                            },
+                            UIAlertAction(title: "게시글로", style: .default) { (_) in
+                                self.steps.accept(MisoStep.popToRootVCIsRequired)
+                            }
                         ])
                     )
                 case 401:
