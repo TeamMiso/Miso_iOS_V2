@@ -34,12 +34,12 @@ class MarketFlow: Flow {
             return coordinateToItemDetailVC(data: data)
         case .coordinateToMarketVCIsRequired:
             return coordinateToMarketVC()
-        case let .alert(title ,message, style, actions):
-            return presentToAlert(title: title, message: message, style: style, actions: actions)
-        case .searchTabbarIsRequired:
-            return coordinateToSearchTabbar()
         case .popToRootVCIsRequired:
             return popToMarketVC()
+        case .cameraIsRequired:
+            return coordinateToCameraVC()
+        case let .alert(title ,message, style, actions):
+            return presentToAlert(title: title, message: message, style: style, actions: actions)
         default:
             return .none
         }
@@ -78,24 +78,22 @@ private extension MarketFlow {
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    func presentToAlert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction]) -> FlowContributors {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-        actions.forEach { alert.addAction($0) }
-        self.rootViewController.topViewController?.present(alert, animated: true)
-        return .none
-    }
-    
-    private func coordinateToSearchTabbar() -> FlowContributors {
-        let reactor = SearchReactor()
-        let vc = SearchVC(reactor: reactor)
-        self.rootViewController.popToRootViewController(animated: true)
-        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
-    }
-    
     private func popToMarketVC() -> FlowContributors {
         let reactor = MarketReactor()
         let vc = MarketVC(reactor: reactor)
         self.rootViewController.popToRootViewController(animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
+    }
+    
+    private func coordinateToCameraVC() -> FlowContributors {
+        self.rootViewController.popToRootViewController(animated: true)
+        return .one(flowContributor: .forwardToParentFlow(withStep: MisoStep.searchTabbarIsRequired))
+    }
+    
+    func presentToAlert(title: String?, message: String?, style: UIAlertController.Style, actions: [UIAlertAction]) -> FlowContributors {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: style)
+        actions.forEach { alert.addAction($0) }
+        self.rootViewController.topViewController?.present(alert, animated: true)
+        return .none
     }
 }

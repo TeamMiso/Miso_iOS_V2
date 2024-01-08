@@ -106,7 +106,6 @@ final class ItemDetailVC: BaseVC<ItemDetailReactor> {
             })
             .disposed(by: disposeBag)
     }
-
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationItem.title = self.itemTitle

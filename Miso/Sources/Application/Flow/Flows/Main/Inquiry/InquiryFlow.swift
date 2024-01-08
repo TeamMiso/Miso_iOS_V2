@@ -32,6 +32,10 @@ class InquiryFlow: Flow {
             return coordinateToInquiryDetailVC(data: data)
         case .writeInquiryVCIsRequired:
             return coordinateToWriteInquiryVC()
+        case .searchTabbarIsRequired:
+            return coordinateToSearchTabbar()
+        case .popToRootVCIsRequired:
+            return popToInquiryVC()
         case let .alert(title ,message, style, actions):
             return presentToAlert(title: title, message: message, style: style, actions: actions)
         default:
@@ -61,6 +65,18 @@ private extension InquiryFlow {
         let reactor = WriteInquiryReactor()
         let vc = WriteInquiryVC(reactor: reactor)
         self.rootViewController.pushViewController(vc, animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
+    }
+    
+    private func coordinateToSearchTabbar() -> FlowContributors {
+        self.rootViewController.popToRootViewController(animated: true)
+        return .one(flowContributor: .forwardToParentFlow(withStep: MisoStep.searchTabbarIsRequired))
+    }
+    
+    private func popToInquiryVC() -> FlowContributors {
+        let reactor = InquiryReactor()
+        let vc = InquiryVC(reactor: reactor)
+        self.rootViewController.popToRootViewController(animated: true)
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
