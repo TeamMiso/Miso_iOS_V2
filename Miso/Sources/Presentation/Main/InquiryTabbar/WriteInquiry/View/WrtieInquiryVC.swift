@@ -109,11 +109,10 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
     
     override func bindView(reactor: WriteInquiryReactor) {
         imageButton.rx.tap
-            .bind {
-                self.presentPhotoLibray()
-            }
+            .map { WriteInquiryReactor.Action.addImageButtonDidTap }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
-            
+        
         rightButton.rx.tap
             .map {  WriteInquiryReactor.Action.writeInquiryComplished(
                 title: self.titleTextField.text ?? "",
