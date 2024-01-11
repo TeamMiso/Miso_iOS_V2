@@ -42,8 +42,8 @@ class SearchFlow: Flow {
         case let .aiResultVCIsRequired(data, originalImage):
             return coordinateToAIDetailVC(data: data, originalImage: originalImage)
             
-        case .coordinateToSearchVCIsRequired:
-            return coordinateToSearchVC()
+        case .popToRootVCIsRequired:
+            return popToSearchVC()
             
         case let .searchResultVCIsRequired(data):
             return coordinateToSearchDetailVC(data: data)
@@ -77,8 +77,7 @@ private extension SearchFlow {
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    private func coordinateToSearchVC() -> FlowContributors {
-        print("coordinate")
+    private func popToSearchVC() -> FlowContributors {
         let reactor = SearchReactor()
         let vc = SearchVC(reactor: reactor)
         self.rootViewController.popToRootViewController(animated: true)
