@@ -28,16 +28,23 @@ class InquiryFlow: Flow {
         switch step {
         case .inquiryTabbarIsRequired:
             return coordinateToInquiryTabbar()
+            
         case let .detailInquiryVCIsRequired(data):
             return coordinateToInquiryDetailVC(data: data)
+            
         case .writeInquiryVCIsRequired:
             return coordinateToWriteInquiryVC()
+            
+            
         case .searchTabbarIsRequired:
             return coordinateToSearchTabbar()
+            
         case .popToRootVCIsRequired:
             return popToInquiryVC()
+            
         case let .alert(title ,message, style, actions):
             return presentToAlert(title: title, message: message, style: style, actions: actions)
+            
         default:
             return .none
         }

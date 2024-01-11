@@ -28,18 +28,25 @@ class MarketFlow: Flow {
         switch step {
         case .marketTabbarIsRequired:
             return coordinateToMarketTabbar()
+            
         case .purchaseHistoryVCIsRequired:
             return coordinateToPurchaseHistoryVC()
+            
         case let .itemDetailVCIsRequired(data):
             return coordinateToItemDetailVC(data: data)
+            
         case .coordinateToMarketVCIsRequired:
             return coordinateToMarketVC()
+            
         case .popToRootVCIsRequired:
             return popToMarketVC()
-        case .cameraIsRequired:
-            return coordinateToCameraVC()
+            
+        case .searchTabbarIsRequired:
+            return coordinateToSearchTabbar()
+            
         case let .alert(title ,message, style, actions):
             return presentToAlert(title: title, message: message, style: style, actions: actions)
+            
         default:
             return .none
         }
@@ -85,7 +92,7 @@ private extension MarketFlow {
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: reactor))
     }
     
-    private func coordinateToCameraVC() -> FlowContributors {
+    private func coordinateToSearchTabbar() -> FlowContributors {
         self.rootViewController.popToRootViewController(animated: true)
         return .one(flowContributor: .forwardToParentFlow(withStep: MisoStep.searchTabbarIsRequired))
     }
