@@ -45,15 +45,10 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         $0.setImage(UIImage(named: "uploadImage"), for: .normal)
     }
     
-    private let placeholderLabel = UILabel().then {
-        $0.text = "문의 내용:"
-        $0.textColor = UIColor(rgb: 0xBFBFBF)
-        $0.font = .miso(size: 15, family: .semiBold)
-    }
-    
     private let contentTextView = UITextView().then {
         $0.font = .miso(size: 15, family: .semiBold)
-        $0.textColor = UIColor(rgb: 0x000000)
+        $0.textColor = UIColor(rgb: 0xBFBFBF)
+        $0.text = "문의 내용 쓰기"
     }
     
     override func setup() {
@@ -64,13 +59,13 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         navigationItem.rightBarButtonItem = rightButton
         
         picker.delegate = self
+        contentTextView.delegate = self
     }
     
     override func addView() {
         scrollView.addSubviews(
             titleTextField,
             imageButton,
-            placeholderLabel,
             contentTextView
         )
         view.addSubview(
@@ -95,15 +90,10 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
             $0.top.equalTo(titleTextField.snp.bottom)
             $0.leading.trailing.equalToSuperview()
         }
-        placeholderLabel.snp.makeConstraints {
-            $0.top.equalTo(imageButton.snp.bottom).offset(16)
-            $0.leading.equalToSuperview().offset(16)
-        }
         contentTextView.snp.makeConstraints {
             $0.height.equalTo(272)
-            $0.width.equalTo(bound.width)
-            $0.top.equalTo(placeholderLabel.snp.bottom)
-            $0.leading.equalToSuperview().offset(16)
+            $0.top.equalTo(imageButton.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().offset(16)
         }
     }
     
@@ -120,6 +110,22 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
                 content: self.contentTextView.text ?? "")}
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+    }
+}
+
+extension WriteInquiryVC: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "문의 내용 쓰기" {
+            textView.text = nil
+            textView.textColor = UIColor(rgb: 0x000000)
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = "문의 내용 쓰기"
+            textView.textColor = UIColor(rgb: 0xBFBFBF)
+        }
     }
 }
 
