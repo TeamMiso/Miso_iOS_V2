@@ -25,7 +25,6 @@ class WriteInquiryReactor: Reactor, Stepper {
     }()
     
     enum Action {
-        case addImageButtonDidTap
         case writeInquiryComplished(title: String, image: UIImage, content: String)
     }
     
@@ -45,8 +44,6 @@ class WriteInquiryReactor: Reactor, Stepper {
 extension WriteInquiryReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .addImageButtonDidTap:
-            return addImageButtonDidTap()
         case let .writeInquiryComplished(title, image, content):
             return writeInquiryComplished(title: title, image: image, content: content)
         }
@@ -64,25 +61,6 @@ extension WriteInquiryReactor {
 
 // MARK: - Method
 private extension WriteInquiryReactor {
-    func addImageButtonDidTap() -> Observable<Mutation> {
-        self.steps.accept(MisoStep.alert(
-            title: "사진 업로드",
-            message: "",
-            style: .actionSheet,
-            actions: [
-                UIAlertAction(title: "카메라로 찍기", style: .default){ (_) in
-//                    self.steps.accept(MisoStep.searchTabbarIsRequired)
-                },
-                UIAlertAction(title: "갤러리에서 선택", style: .default) { (_) in
-//                    self.steps.accept(MisoStep.popToRootVCIsRequired)
-                },
-                UIAlertAction(title: "취소", style: .cancel) { (_) in
-//                    self.steps.accept(MisoStep.popToRootVCIsRequired)
-                }
-            ])
-        )
-        return .empty()
-    }
     
     func writeInquiryComplished(title: String, image: UIImage, content: String) -> Observable<Mutation> {
         self.inquiryProvider.request(.askInquiry(accessToken: self.accessToken, image: image, title: title, content: content)){ response in
