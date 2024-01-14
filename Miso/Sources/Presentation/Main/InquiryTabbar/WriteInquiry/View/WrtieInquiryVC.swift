@@ -6,8 +6,18 @@ import RxDataSources
 import PhotosUI
 
 final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
-    
+
     var inquiryImage: UIImage? = nil
+    
+    private let imagePickerVC = UIImagePickerController().then {
+        $0.sourceType = .camera
+        $0.cameraFlashMode = .auto
+        $0.allowsEditing = true
+    }
+    
+    func presentCamera(){
+        present(imagePickerVC, animated: true, completion: nil)
+    }
     
     lazy var configuration: PHPickerConfiguration = {
         var config = PHPickerConfiguration()
@@ -16,12 +26,12 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         return config
     }()
     
-    lazy var picker: PHPickerViewController = {
+    lazy var phpickerVC: PHPickerViewController = {
         return PHPickerViewController(configuration: self.configuration)
     }()
     
-    func presentPhotoLibray(){
-        present(picker, animated: true, completion: nil)
+    func presentPhotoLibrary(){
+        present(phpickerVC, animated: true, completion: nil)
     }
     
     private let scrollView = UIScrollView().then {
@@ -58,7 +68,8 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         self.navigationItem.backBarButtonItem = backBarButtonItem
         navigationItem.rightBarButtonItem = rightButton
         
-        picker.delegate = self
+        imagePickerVC.delegate = self
+        phpickerVC.delegate = self
         contentTextView.delegate = self
     }
     
@@ -99,8 +110,17 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
     
     override func bindView(reactor: WriteInquiryReactor) {
         imageButton.rx.tap
-            .map { WriteInquiryReactor.Action.addImageButtonDidTap }
-            .bind(to: reactor.action)
+            .subscribe(onNext: { [weak self] in
+                let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                actionSheet.addAction(UIAlertAction(title: "카메라로 찍기", style: .default, handler: { _ in
+                    self?.presentCamera()
+                }))
+                actionSheet.addAction(UIAlertAction(title: "앨범에서 선택", style: .default, handler: { _ in
+                    self?.presentPhotoLibrary()
+                }))
+                actionSheet.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+                self?.present(actionSheet, animated: true, completion: nil)
+            })
             .disposed(by: disposeBag)
         
         rightButton.rx.tap
@@ -148,3 +168,22 @@ extension WriteInquiryVC: PHPickerViewControllerDelegate {
         }
     }
 }
+
+extension WriteInquiryVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            picker.dismiss(animated: true) {
+                self.inquiryImage = pickedImage
+                self.imageButton.setImage(pickedImage, for: .normal)
+            }
+        } else {
+            print("이미지를 Data로 변환하는 데 실패했습니다.")
+        }
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+
