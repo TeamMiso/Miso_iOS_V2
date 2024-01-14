@@ -74,7 +74,7 @@ private extension AIDetailReactor {
                 
                 switch statusCode{
                 case 200:
-                    self.steps.accept(MisoStep.coordinateToSearchVCIsRequired)
+                    self.steps.accept(MisoStep.searchTabbarIsRequired)
                 case 401:
                     print("토큰이 유효하지 않습니다.")
                 case 404:
