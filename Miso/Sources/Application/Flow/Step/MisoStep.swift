@@ -17,8 +17,7 @@ enum MisoStep: Step {
     case settingTabbarIsRequired
     
     // MARK: - Search
-    case coordinateToSearchVCIsRequired
-    case cameraIsRequired
+    case searchVCIsRequired
     case aiResultVCIsRequired(UploadRecyclablesListResponse, UIImage)
     case searchResultVCIsRequired(DetailRecyclablesListResponse)
     
@@ -30,6 +29,8 @@ enum MisoStep: Step {
     // MARK: - Inquiry
     case detailInquiryVCIsRequired(DetailInquiryResponse)
     case writeInquiryVCIsRequired
+    case cameraVCIsRequired
+    case galleryVCIsRequired
     
     // MARK: - Setting
     
