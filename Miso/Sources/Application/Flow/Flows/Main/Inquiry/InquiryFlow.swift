@@ -5,7 +5,7 @@ import RxCocoa
 
 struct InquiryStepper: Stepper{
     var steps = PublishRelay<Step>()
-
+    
     var initialStep: Step {
         return MisoStep.inquiryTabbarIsRequired
     }
@@ -34,7 +34,6 @@ class InquiryFlow: Flow {
             
         case .writeInquiryVCIsRequired:
             return coordinateToWriteInquiryVC()
-            
             
         case .searchTabbarIsRequired:
             return coordinateToSearchTabbar()
