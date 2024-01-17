@@ -107,7 +107,6 @@ final class SearchVC: BaseVC<SearchReactor> {
         let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = UIColor(rgb: 0x3484DB)
         self.navigationItem.backBarButtonItem = backBarButtonItem
-    
     }
     
     override func addView() {
@@ -268,8 +267,6 @@ final class SearchVC: BaseVC<SearchReactor> {
     func storeSearchData(title: String, imageUrl: String, recycleMethod: String, recyclablesType: String) {
         dbHelper.insertData(title: title, imageUrl: imageUrl, recycleMethod: recycleMethod, recyclablesType: recyclablesType)
     }
-    
-   
 }
 
 extension SearchVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
