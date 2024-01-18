@@ -6,8 +6,18 @@ import RxDataSources
 import PhotosUI
 
 final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
-    
+
     var inquiryImage: UIImage? = nil
+    
+    private let imagePickerVC = UIImagePickerController().then {
+        $0.sourceType = .camera
+        $0.cameraFlashMode = .auto
+        $0.allowsEditing = true
+    }
+    
+    func presentCamera(){
+        present(imagePickerVC, animated: true, completion: nil)
+    }
     
     lazy var configuration: PHPickerConfiguration = {
         var config = PHPickerConfiguration()
@@ -16,12 +26,12 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         return config
     }()
     
-    lazy var picker: PHPickerViewController = {
+    lazy var phpickerVC: PHPickerViewController = {
         return PHPickerViewController(configuration: self.configuration)
     }()
     
-    func presentPhotoLibray(){
-        present(picker, animated: true, completion: nil)
+    func presentPhotoLibrary(){
+        present(phpickerVC, animated: true, completion: nil)
     }
     
     private let scrollView = UIScrollView().then {
@@ -45,15 +55,10 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         $0.setImage(UIImage(named: "uploadImage"), for: .normal)
     }
     
-    private let placeholderLabel = UILabel().then {
-        $0.text = "문의 내용:"
-        $0.textColor = UIColor(rgb: 0xBFBFBF)
-        $0.font = .miso(size: 15, family: .semiBold)
-    }
-    
     private let contentTextView = UITextView().then {
         $0.font = .miso(size: 15, family: .semiBold)
-        $0.textColor = UIColor(rgb: 0x000000)
+        $0.textColor = UIColor(rgb: 0xBFBFBF)
+        $0.text = "문의 내용 쓰기"
     }
     
     override func setup() {
@@ -63,14 +68,15 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
         self.navigationItem.backBarButtonItem = backBarButtonItem
         navigationItem.rightBarButtonItem = rightButton
         
-        picker.delegate = self
+        imagePickerVC.delegate = self
+        phpickerVC.delegate = self
+        contentTextView.delegate = self
     }
     
     override func addView() {
         scrollView.addSubviews(
             titleTextField,
             imageButton,
-            placeholderLabel,
             contentTextView
         )
         view.addSubview(
@@ -95,25 +101,28 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
             $0.top.equalTo(titleTextField.snp.bottom)
             $0.leading.trailing.equalToSuperview()
         }
-        placeholderLabel.snp.makeConstraints {
-            $0.top.equalTo(imageButton.snp.bottom).offset(16)
-            $0.leading.equalToSuperview().offset(16)
-        }
         contentTextView.snp.makeConstraints {
             $0.height.equalTo(272)
-            $0.width.equalTo(bound.width)
-            $0.top.equalTo(placeholderLabel.snp.bottom)
-            $0.leading.equalToSuperview().offset(16)
+            $0.top.equalTo(imageButton.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().offset(16)
         }
     }
     
     override func bindView(reactor: WriteInquiryReactor) {
         imageButton.rx.tap
-            .bind {
-                self.presentPhotoLibray()
-            }
+            .subscribe(onNext: { [weak self] in
+                let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                actionSheet.addAction(UIAlertAction(title: "카메라로 찍기", style: .default, handler: { _ in
+                    self?.presentCamera()
+                }))
+                actionSheet.addAction(UIAlertAction(title: "앨범에서 선택", style: .default, handler: { _ in
+                    self?.presentPhotoLibrary()
+                }))
+                actionSheet.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+                self?.present(actionSheet, animated: true, completion: nil)
+            })
             .disposed(by: disposeBag)
-            
+        
         rightButton.rx.tap
             .map {  WriteInquiryReactor.Action.writeInquiryComplished(
                 title: self.titleTextField.text ?? "",
@@ -121,6 +130,22 @@ final class WriteInquiryVC: BaseVC<WriteInquiryReactor> {
                 content: self.contentTextView.text ?? "")}
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+    }
+}
+
+extension WriteInquiryVC: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "문의 내용 쓰기" {
+            textView.text = nil
+            textView.textColor = UIColor(rgb: 0x000000)
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = "문의 내용 쓰기"
+            textView.textColor = UIColor(rgb: 0xBFBFBF)
+        }
     }
 }
 
@@ -143,3 +168,22 @@ extension WriteInquiryVC: PHPickerViewControllerDelegate {
         }
     }
 }
+
+extension WriteInquiryVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            picker.dismiss(animated: true) {
+                self.inquiryImage = pickedImage
+                self.imageButton.setImage(pickedImage, for: .normal)
+            }
+        } else {
+            print("이미지를 Data로 변환하는 데 실패했습니다.")
+        }
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+

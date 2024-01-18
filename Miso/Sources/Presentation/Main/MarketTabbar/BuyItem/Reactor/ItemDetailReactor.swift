@@ -144,7 +144,7 @@ private extension ItemDetailReactor {
                                             self.steps.accept(MisoStep.popToRootVCIsRequired)
                                         },
                                         UIAlertAction(title: "카메라로", style: .default) { (_) in
-                                            self.steps.accept(MisoStep.cameraIsRequired)
+                                            self.steps.accept(MisoStep.searchTabbarIsRequired)
                                         }
                                     ])
                                 )

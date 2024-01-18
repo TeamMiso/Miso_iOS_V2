@@ -49,10 +49,11 @@ extension WriteInquiryReactor {
         }
         
     }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        
+            
         }
         return newState
     }
@@ -60,6 +61,7 @@ extension WriteInquiryReactor {
 
 // MARK: - Method
 private extension WriteInquiryReactor {
+    
     func writeInquiryComplished(title: String, image: UIImage, content: String) -> Observable<Mutation> {
         self.inquiryProvider.request(.askInquiry(accessToken: self.accessToken, image: image, title: title, content: content)){ response in
             switch response {

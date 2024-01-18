@@ -104,8 +104,8 @@ private extension SettingReactor {
             message: "로그아웃하시겠습니까?",
             style: .alert,
             actions: [
-                UIAlertAction(title: "취소", style: .cancel),
-                UIAlertAction(title: "확인", style: .default) { (_) in
+                UIAlertAction(title: "취소", style: .default),
+                UIAlertAction(title: "로그아웃", style: .destructive) { (_) in
                     self.authProvider.request(.logout(accessToken: self.accessToken)) { response in
                         switch response {
                         case .success(let result):
