@@ -5,8 +5,11 @@ import Moya
 
 final class LoginVC: BaseVC<AuthReactor> {
     
-    private let containView = UIView()
-    
+    var misoIntroStackview = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .equalSpacing
+        $0.alignment = .fill
+    }
     private let misoLabel = UILabel().then {
         $0.text = "미소"
         $0.textColor = UIColor(rgb: 0x25D07D)
@@ -17,6 +20,7 @@ final class LoginVC: BaseVC<AuthReactor> {
         $0.textColor = UIColor(rgb: 0xBFBFBF)
         $0.font = .miso(size: 20, family: .regular)
     }
+    private let textFieldView = UIView()
     private let emailLabel = UILabel().then {
         $0.text = "Email"
         $0.textColor = UIColor(rgb: 0x595959)
@@ -69,28 +73,31 @@ final class LoginVC: BaseVC<AuthReactor> {
     
     override func addView() {
         view.addSubviews(
-            containView,
+            misoIntroStackview,
+            textFieldView,
+            loginButton,
             notMemberLabel,
             signupButton
         )
-        containView.addSubviews(
+        misoIntroStackview.addSubviews(
             misoLabel,
-            explainMisoLabel,
+            explainMisoLabel
+        )
+        textFieldView.addSubviews(
             emailLabel,
             emailTextField,
             passwordLabel,
             passwordTextField,
             forgotPasswordLabel,
-            findPasswordButton,
-            loginButton
+            findPasswordButton
         )
     }
     
     override func setLayout(){
-        containView.snp.makeConstraints {
-            $0.height.equalTo(408)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
-            $0.leading.trailing.equalToSuperview().inset(16)
+        misoIntroStackview.snp.makeConstraints {
+            $0.height.equalTo(80)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(bound.height / 15.2)
+            $0.leading.equalToSuperview().offset(16)
         }
         misoLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -100,9 +107,14 @@ final class LoginVC: BaseVC<AuthReactor> {
             $0.top.equalTo(misoLabel.snp.bottom)
             $0.leading.equalToSuperview()
         }
+        textFieldView.snp.makeConstraints {
+            $0.height.equalTo(184)
+            $0.top.equalTo(misoIntroStackview.snp.bottom).offset(bound.height / 7.1)
+            $0.leading.trailing.equalToSuperview().inset(16)
+        }
         emailLabel.snp.makeConstraints {
-            $0.top.equalTo(explainMisoLabel.snp.bottom).offset(40)
-            $0.leading.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(8)
         }
         emailTextField.snp.makeConstraints {
             $0.height.equalTo(48)
@@ -111,7 +123,7 @@ final class LoginVC: BaseVC<AuthReactor> {
         }
         passwordLabel.snp.makeConstraints {
             $0.top.equalTo(emailTextField.snp.bottom).offset(24)
-            $0.leading.equalToSuperview()
+            $0.leading.equalToSuperview().offset(8)
         }
         passwordTextField.snp.makeConstraints {
             $0.height.equalTo(48)
@@ -128,8 +140,8 @@ final class LoginVC: BaseVC<AuthReactor> {
         }
         loginButton.snp.makeConstraints {
             $0.height.equalTo(48)
-            $0.top.equalTo(findPasswordButton.snp.bottom).offset(56)
-            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(notMemberLabel.snp.top).offset(-(bound.height / 10.65))
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
         notMemberLabel.snp.makeConstraints {
             $0.bottom.equalTo(signupButton.snp.top).inset(-8)
@@ -137,7 +149,7 @@ final class LoginVC: BaseVC<AuthReactor> {
         }
         signupButton.snp.makeConstraints {
             $0.height.equalTo(24)
-            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(80)
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(bound.height / 21.3)
             $0.centerX.equalToSuperview()
         }
     }
@@ -147,8 +159,8 @@ final class LoginVC: BaseVC<AuthReactor> {
             .skip(1)    // 초기 값 버리기
             .drive(onNext: { [weak self] keyboardVisibleHeight in
                 guard let self = self else { return }
-                self.containView.snp.updateConstraints {
-                    $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(16)
+                self.textFieldView.snp.updateConstraints {
+                    $0.top.equalTo(self.misoIntroStackview.snp.bottom).offset(self.bound.height / 21.3)
                 }
                 UIView.animate(withDuration: 0.3) {
                     self.view.layoutIfNeeded()
@@ -168,9 +180,9 @@ final class LoginVC: BaseVC<AuthReactor> {
             .disposed(by: disposeBag)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        containView.snp.updateConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+    override func viewDidAppear(_ animated: Bool) {
+        textFieldView.snp.updateConstraints {
+            $0.top.equalTo(misoIntroStackview.snp.bottom).offset(bound.height / 7.1)
         }
     }
     
@@ -182,8 +194,8 @@ extension LoginVC: UITextFieldDelegate{
         textField.resignFirstResponder()
         
         DispatchQueue.main.async {
-            self.containView.snp.updateConstraints {
-                $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(56)
+            self.textFieldView.snp.updateConstraints {
+                $0.top.equalTo(self.misoIntroStackview.snp.bottom).offset(self.bound.height / 7.1)
             }
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
@@ -194,8 +206,8 @@ extension LoginVC: UITextFieldDelegate{
     
     override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
         view.endEditing(true)
-        containView.snp.updateConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(108)
+        textFieldView.snp.updateConstraints {
+            $0.top.equalTo(misoIntroStackview.snp.bottom).offset(bound.height / 7.1)
         }
     }
 }
