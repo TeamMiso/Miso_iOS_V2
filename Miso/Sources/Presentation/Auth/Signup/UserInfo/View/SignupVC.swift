@@ -4,7 +4,7 @@ import SnapKit
 
 final class SignupVC: BaseVC<AuthReactor> {
     
-    private let containView = UIView()
+    private let textFieldsView = UIView()
     
     private let emailLabel = UILabel().then {
         $0.text = "Email"
@@ -38,7 +38,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         RxKeyboard.instance.visibleHeight
             .skip(1)    // 초기 값 버리기
             .drive(onNext: { keyboardVisibleHeight in
-                self.containView.snp.updateConstraints {
+                self.textFieldsView.snp.updateConstraints {
                     $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(24)
                 }
                 self.signupButton.snp.updateConstraints {
@@ -58,6 +58,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         passwordTextField.delegate = self
         
         self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationController?.navigationBar
         self.navigationItem.title = "회원가입"
         
         showKeyboard()
@@ -65,28 +66,28 @@ final class SignupVC: BaseVC<AuthReactor> {
     
     override func addView() {
         view.addSubviews(
-            containView
+            textFieldsView,
+            signupButton
         )
-        containView.addSubviews(
+        textFieldsView.addSubviews(
             emailLabel,
             emailTextField,
             passwordLabel,
             passwordTextField,
             confirmPasswordLabel,
-            checkPasswordTextField,
-            signupButton
+            checkPasswordTextField
         )
     }
     
     override func setLayout(){
-        containView.snp.makeConstraints {
-            $0.height.equalTo(336)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
+        textFieldsView.snp.makeConstraints {
+            $0.height.equalTo(240)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(bound.height / 9.68)
             $0.leading.trailing.equalToSuperview().inset(16)
         }
         emailLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.leading.equalToSuperview()
+            $0.leading.equalToSuperview().offset(8)
         }
         emailTextField.snp.makeConstraints {
             $0.height.equalTo(48)
@@ -95,7 +96,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         }
         passwordLabel.snp.makeConstraints {
             $0.top.equalTo(emailTextField.snp.bottom).offset(24)
-            $0.leading.equalToSuperview()
+            $0.leading.equalToSuperview().offset(8)
         }
         passwordTextField.snp.makeConstraints {
             $0.height.equalTo(48)
@@ -104,7 +105,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         }
         confirmPasswordLabel.snp.makeConstraints {
             $0.top.equalTo(passwordTextField.snp.bottom).offset(24)
-            $0.leading.equalToSuperview()
+            $0.leading.equalToSuperview().offset(8)
         }
         checkPasswordTextField.snp.makeConstraints {
             $0.height.equalTo(48)
@@ -114,7 +115,7 @@ final class SignupVC: BaseVC<AuthReactor> {
         signupButton.snp.makeConstraints {
             $0.height.equalTo(48)
             $0.top.equalTo(checkPasswordTextField.snp.bottom).offset(88)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
     }
     
@@ -130,7 +131,7 @@ final class SignupVC: BaseVC<AuthReactor> {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        containView.snp.updateConstraints {
+        textFieldsView.snp.updateConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
         }
         signupButton.snp.updateConstraints {
@@ -143,7 +144,7 @@ extension SignupVC: UITextFieldDelegate{
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        containView.snp.updateConstraints {
+        textFieldsView.snp.updateConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
         }
         signupButton.snp.updateConstraints {
@@ -154,8 +155,8 @@ extension SignupVC: UITextFieldDelegate{
     
     override func touchesBegan(_: Set<UITouch>, with _: UIEvent?) {
         view.endEditing(true)
-        containView.snp.updateConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(88)
+        textFieldsView.snp.updateConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(bound.height / 9.68)
         }
     }
 }
