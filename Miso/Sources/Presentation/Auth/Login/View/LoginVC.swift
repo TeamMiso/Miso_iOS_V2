@@ -180,6 +180,11 @@ final class LoginVC: BaseVC<AuthReactor> {
             .disposed(by: disposeBag)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         textFieldView.snp.updateConstraints {
             $0.top.equalTo(misoIntroStackview.snp.bottom).offset(bound.height / 7.1)
