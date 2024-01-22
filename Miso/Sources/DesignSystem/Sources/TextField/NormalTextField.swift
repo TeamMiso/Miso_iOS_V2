@@ -1,6 +1,6 @@
 import UIKit
 
-public final class NormalTextField: UITextField{
+public final class NormalTextField: UITextField {
     
     init(placeholder: String) {
         super.init(frame: .zero)
@@ -22,5 +22,18 @@ public final class NormalTextField: UITextField{
         leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: 48))
         leftViewMode = .always
     }
-    
+}
+
+extension NormalTextField: UITextFieldDelegate {
+
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        if let char = string.cString(using: String.Encoding.utf8) {
+//            let isBackSpace = strcmp(char, "\\b")
+//            if isBackSpace == -92 {
+//                return true
+//            }
+//        }
+//        guard textField.text!.count < 21 else { return false }
+//        return true
+//    }
 }

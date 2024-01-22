@@ -193,7 +193,29 @@ final class LoginVC: BaseVC<AuthReactor> {
     
 }
 
-extension LoginVC: UITextFieldDelegate{
+extension LoginVC: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField {
+        case emailTextField:
+            emailTextField.layer.borderColor = UIColor(rgb: 0x25D07D).cgColor
+        case passwordTextField:
+            passwordTextField.layer.borderColor = UIColor(rgb: 0x25D07D).cgColor
+        default:
+            return
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        switch textField {
+        case emailTextField:
+            emailTextField.layer.borderColor = UIColor(rgb: 0xBFBFBF).cgColor
+        case passwordTextField:
+            passwordTextField.layer.borderColor = UIColor(rgb: 0xBFBFBF).cgColor
+        default:
+            return
+        }
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
